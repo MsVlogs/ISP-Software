@@ -48,14 +48,15 @@
                             <td> <?php $userTypeLabels = ['SA' => 'Super Admin', 'EO' => 'Entry Operator'];
                                     echo isset($value['UserType']) ? ($userTypeLabels[$value['UserType']] ?? '') : NULL; ?>
                             </td>
-                            <td> <?php echo ($value['Status'] == '1') ? '<span class="bg-success-focus text-success-600 border border-success-main px-24 py-4 radius-4 fw-medium text-sm">Active <i class="fas fa-check"></i></span>' : '<span class="bg-danger-200 text-danger-600 border border-neutral-400 px-24 py-4 radius-4 fw-medium text-sm">InActive <i class="fas fa-times text-danger"></i></span>' ?> </td>
+                            <td> <?php echo ($value['Status'] == '1') ? '<span class="bg-success-focus text-success-600 border border-success-main px-24 py-4 radius-4 fw-medium text-sm">Active <i class="fas fa-check"></i></span>' : '<span class="bg-danger-focus text-danger-600 border border-danger-main px-24 py-4 radius-4 fw-medium text-sm">Inactive <i class="fas fa-times"></i></span>'; ?>
+                            </td>
                             <td>
                                 <div id="modal<?php echo $value['UserId'] ?>" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
                                     <div class="modal-dialog">
                                         <div class="modal-content p-0">
                                             <div class="card mb-0">
                                                 <div class="card-header">
-                                                    <h5 class="text-center"> <?php echo isset($value['FullName']) ? $value['FullName'] : NULL; ?> </h5> <img src="<?php echo $value['PhotoPath']; ?>" class="img-thumbnail" style="width: 100px;height: 100px;">
+                                                    <h5 class="text-center"> <?php echo isset($value['FullName']) ? $value['FullName'] : NULL; ?> </h5> <img src="<?php echo $value['PhotoPath']; ?>" class="rounded-circle" alt="profile" width="80">
                                                 </div>
                                                 <div class="card-body">
                                                     <div class="row">
@@ -98,7 +99,7 @@
                                                         <!-- Status -->
                                                         <div class="col-md-4">
                                                             <strong>Status</strong><br>
-                                                            <?php echo ($value['Status'] == '1') ? '<span class="text-success">Active <i class="fas fa-check"></i></span>' : '<span class="text-danger">InActive <i class="fas fa-times text-danger"></i></span>' ?>
+                                                            <?php echo ($value['Status'] == '1') ? '<span class="text-success">Active <i class="fas fa-check"></i></span>' : '<span class="text-danger">Inactive <i class="fas fa-times"></i></span>'; ?>
                                                         </div>
 
                                                         <!-- User Type -->
@@ -111,7 +112,10 @@
                                                         <div class="col-md-12 text-wrap">
                                                             <strong>Menu Permission</strong><br>
                                                             <?php
-                                                            $menuPermissions = unserialize($value['MenuPermission']);
+                                                            $menuPermissions = !empty($value['MenuPermission']) ? @unserialize($value['MenuPermission']) : [];
+                                                            if ($menuPermissions === false || !is_array($menuPermissions)) {
+                                                                $menuPermissions = [];
+                                                            }
                                                             foreach ($menuPermissions as $permission) {
                                                                 echo str_replace('_', ' ', $permission) . ', ';
                                                             }
@@ -121,7 +125,10 @@
                                                         <!-- Work Permission -->
                                                         <div class="col-md-12">
                                                             <strong>Work Permission</strong><br>
-                                                            <?php $workPermissions = unserialize($value['WorkPermission']);
+                                                            <?php $workPermissions = !empty($value['WorkPermission']) ? @unserialize($value['WorkPermission']) : [];
+                                                            if ($workPermissions === false || !is_array($workPermissions)) {
+                                                                $workPermissions = [];
+                                                            }
                                                             foreach ($workPermissions as $permission) {
                                                                 echo str_replace('_', ' ', $permission) . ', ';
                                                             }
@@ -144,8 +151,8 @@
 
                             </td>
 
-                            <td><a class=" bg-info-200 btn btn-blue waves-effect waves-light" <?php if ($ty == 'SA') { ?> href="?page=user_edit&token=<?php echo isset($value['UserId']) ? $value['UserId'] : NULL; ?>" <?php   } ?>><span class="fas fa-edit"></span></a></td>
-                            <td><button type="button" class="btn btn-warning waves-effect waves-light passwordchange" data-passwordid="<?php echo $value['UserId'] ?>" data-bs-toggle="modal" data-bs-target="#con-close-modal">Change</button> </td>
+                            <td><a class=" bg-info-200 btn btn-blue waves-effect waves-light" <?php if ($ty == 'SA') { ?> href="?page=user_edit&token=<?php echo isset($value['UserId']) ? $value['UserId'] : '' ?>" <?php } ?>>Edit</a></td>
+                            <td><button type="button" class="btn btn-warning waves-effect waves-light passwordchange" data-passwordid="<?php echo $value['UserId'] ?>" data-bs-toggle="modal" data-bs-target="#con-close-modal">Change</button></td>
                         </tr>
                     <?php
                     }
@@ -163,14 +170,15 @@
                             <td> <?php $userTypeLabels = ['SA' => 'Super Admin', 'EO' => 'Entry Operator'];
                                     echo isset($value['UserType']) ? ($userTypeLabels[$value['UserType']] ?? '') : NULL; ?>
                             </td>
-                            <td> <?php echo ($value['Status'] == '1') ? '<span class="bg-success-focus text-success-600 border border-success-main px-24 py-4 radius-4 fw-medium text-sm">Active <i class="fas fa-check"></i></span>' : '<span class="bg-danger-200 text-danger-600 border border-neutral-400 px-24 py-4 radius-4 fw-medium text-sm">InActive <i class="fas fa-times text-danger"></i></span>' ?> </td>
+                            <td> <?php echo ($value['Status'] == '1') ? '<span class="bg-success-focus text-success-600 border border-success-main px-24 py-4 radius-4 fw-medium text-sm">Active <i class="fas fa-check"></i></span>' : '<span class="bg-danger-focus text-danger-600 border border-danger-main px-24 py-4 radius-4 fw-medium text-sm">Inactive <i class="fas fa-times"></i></span>'; ?>
+                            </td>
                             <td>
                                 <div id="modal<?php echo $value['UserId'] ?>" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
                                     <div class="modal-dialog">
                                         <div class="modal-content p-0">
                                             <div class="card mb-0">
                                                 <div class="card-header">
-                                                    <h5 class="text-center"> <?php echo isset($value['FullName']) ? $value['FullName'] : NULL; ?> </h5> <img src="<?php echo $value['PhotoPath']; ?>" class="img-thumbnail" style="width: 100px;height: 100px;">
+                                                    <h5 class="text-center"> <?php echo isset($value['FullName']) ? $value['FullName'] : NULL; ?> </h5> <img src="<?php echo $value['PhotoPath']; ?>" class="rounded-circle" alt="profile" width="80">
                                                 </div>
                                                 <div class="card-body">
                                                     <div class="row">
@@ -213,7 +221,7 @@
                                                         <!-- Status -->
                                                         <div class="col-md-4">
                                                             <strong>Status</strong><br>
-                                                            <?php echo ($value['Status'] == '1') ? '<span class="text-success">Active <i class="fas fa-check"></i></span>' : '<span class="text-danger">InActive <i class="fas fa-times text-danger"></i></span>' ?>
+                                                            <?php echo ($value['Status'] == '1') ? '<span class="text-success">Active <i class="fas fa-check"></i></span>' : '<span class="text-danger">Inactive <i class="fas fa-times"></i></span>'; ?>
                                                         </div>
 
                                                         <!-- User Type -->
@@ -226,7 +234,10 @@
                                                         <div class="col-md-12 text-wrap">
                                                             <strong>Menu Permission</strong><br>
                                                             <?php
-                                                            $menuPermissions = unserialize($value['MenuPermission']);
+                                                            $menuPermissions = !empty($value['MenuPermission']) ? @unserialize($value['MenuPermission']) : [];
+                                                            if ($menuPermissions === false || !is_array($menuPermissions)) {
+                                                                $menuPermissions = [];
+                                                            }
                                                             foreach ($menuPermissions as $permission) {
                                                                 echo str_replace('_', ' ', $permission) . ', ';
                                                             }
@@ -236,7 +247,10 @@
                                                         <!-- Work Permission -->
                                                         <div class="col-md-12">
                                                             <strong>Work Permission</strong><br>
-                                                            <?php $workPermissions = unserialize($value['WorkPermission']);
+                                                            <?php $workPermissions = !empty($value['WorkPermission']) ? @unserialize($value['WorkPermission']) : [];
+                                                            if ($workPermissions === false || !is_array($workPermissions)) {
+                                                                $workPermissions = [];
+                                                            }
                                                             foreach ($workPermissions as $permission) {
                                                                 echo str_replace('_', ' ', $permission) . ', ';
                                                             }
@@ -259,8 +273,8 @@
 
                             </td>
 
-                            <td><a class=" bg-info-200 btn btn-blue waves-effect waves-light" <?php if ($ty == 'SA') { ?> href="?page=user_edit&token=<?php echo isset($value['UserId']) ? $value['UserId'] : NULL; ?>" <?php   } ?>><span class="fas fa-edit"></span></a></td>
-                            <td><button type="button" class="btn btn-warning waves-effect waves-light passwordchange" data-passwordid="<?php echo $value['UserId'] ?>" data-bs-toggle="modal" data-bs-target="#con-close-modal">Change</button> </td>
+                            <td><a class=" bg-info-200 btn btn-blue waves-effect waves-light" <?php if ($ty == 'SA') { ?> href="?page=user_edit&token=<?php echo isset($value['UserId']) ? $value['UserId'] : '' ?>" <?php } ?>>Edit</a></td>
+                            <td><button type="button" class="btn btn-warning waves-effect waves-light passwordchange" data-passwordid="<?php echo $value['UserId'] ?>" data-bs-toggle="modal" data-bs-target="#con-close-modal">Change</button></td>
                         </tr>
                 <?php  }
                 } ?>
