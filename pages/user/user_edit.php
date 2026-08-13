@@ -14,12 +14,12 @@ if (isset($_GET['token'])) {
 }
 
 // Ensure permissions arrays are always arrays to avoid in_array() TypeError
-$menuPermissions = @unserialize($user['MenuPermission']);
-if (!is_array($menuPermissions)) {
+$menuPermissions = !empty($user['MenuPermission']) ? @unserialize($user['MenuPermission']) : [];
+if ($menuPermissions === false || !is_array($menuPermissions)) {
     $menuPermissions = [];
 }
-$workPermissions = @unserialize($user['WorkPermission']);
-if (!is_array($workPermissions)) {
+$workPermissions = !empty($user['WorkPermission']) ? @unserialize($user['WorkPermission']) : [];
+if ($workPermissions === false || !is_array($workPermissions)) {
     $workPermissions = [];
 }
 
@@ -99,25 +99,25 @@ if (!is_array($workPermissions)) {
                             <div class="row">
                                 <div class="col-md-2">
                                     <div class="form-check checked-success d-flex align-items-center gap-2">
-                                        <input class="form-check-input" type="checkbox" name="workPermission[]" value="view" id="view" <?php echo (in_array('view', $workPermissions) ? 'checked' : ''); ?> />
+                                        <input class="form-check-input" type="checkbox" name="workPermission[]" value="view" id="view" <?php echo (in_array('view', $workPermissions) ? 'checked' : ''); ?>>
                                         <label class="form-check-label" for="view">View</label>
                                     </div>
                                 </div>
                                 <div class="col-md-2">
                                     <div class="form-check checked-success d-flex align-items-center gap-2">
-                                        <input class="form-check-input" type="checkbox" name="workPermission[]" value="add" id="add" <?php echo (in_array('add', $workPermissions) ? 'checked' : ''); ?> />
+                                        <input class="form-check-input" type="checkbox" name="workPermission[]" value="add" id="add" <?php echo (in_array('add', $workPermissions) ? 'checked' : ''); ?>>
                                         <label class="form-check-label" for="add">Add</label>
                                     </div>
                                 </div>
                                 <div class="col-md-2">
                                     <div class="form-check checked-success d-flex align-items-center gap-2">
-                                        <input class="form-check-input" type="checkbox" name="workPermission[]" value="edit" id="edit" <?php echo (in_array('edit', $workPermissions) ? 'checked' : ''); ?> />
+                                        <input class="form-check-input" type="checkbox" name="workPermission[]" value="edit" id="edit" <?php echo (in_array('edit', $workPermissions) ? 'checked' : ''); ?>>
                                         <label class="form-check-label" for="edit">Edit</label>
                                     </div>
                                 </div>
                                 <div class="col-md-3">
                                     <div class="form-check checked-success d-flex align-items-center gap-2">
-                                        <input class="form-check-input" type="checkbox" name="workPermission[]" value="delete" id="delete" <?php echo (in_array('delete', $workPermissions) ? 'checked' : ''); ?> />
+                                        <input class="form-check-input" type="checkbox" name="workPermission[]" value="delete" id="delete" <?php echo (in_array('delete', $workPermissions) ? 'checked' : ''); ?>>
                                         <label class="form-check-label" for="delete">Delete</label>
                                     </div>
                                 </div>
@@ -138,15 +138,15 @@ if (!is_array($workPermissions)) {
                             <div class="form-group">
                                 <label class="font-weight-bold">Admin User </label>
                                 <div class="form-check checked-success d-flex align-items-center gap-2">
-                                    <input class="form-check-input" type="checkbox" name="menu_permission[]" value="user_view" id="user_view" <?php echo (in_array('user_view', $menuPermissions) ? 'checked' : ''); ?> />
+                                    <input class="form-check-input" type="checkbox" name="menu_permission[]" value="user_view" id="user_view" <?php echo (in_array('user_view', $menuPermissions) ? 'checked' : ''); ?>>
                                     <label class="form-check-label" for="user_view">User List</label>
                                 </div>
                                 <div class="form-check checked-success d-flex align-items-center gap-2">
-                                    <input class="form-check-input" type="checkbox" name="menu_permission[]" value="user_create" id="user_create" <?php echo (in_array('user_create', $menuPermissions) ? 'checked' : ''); ?> />
+                                    <input class="form-check-input" type="checkbox" name="menu_permission[]" value="user_create" id="user_create" <?php echo (in_array('user_create', $menuPermissions) ? 'checked' : ''); ?>>
                                     <label class="form-check-label" for="user_create">Add User</label>
                                 </div>
                                 <div class="form-check checked-success d-flex align-items-center gap-2">
-                                    <input class="form-check-input" type="checkbox" name="menu_permission[]" value="user_edit" id="user_edit" <?php echo (in_array('user_edit', $menuPermissions) ? 'checked' : ''); ?> />
+                                    <input class="form-check-input" type="checkbox" name="menu_permission[]" value="user_edit" id="user_edit" <?php echo (in_array('user_edit', $menuPermissions) ? 'checked' : ''); ?>>
                                     <label class="form-check-label" for="user_edit">Update User</label>
                                 </div>
                             </div>
@@ -155,19 +155,19 @@ if (!is_array($workPermissions)) {
                             <div class="form-group">
                                 <label class="font-weight-bold">Others</label>
                                 <div class="form-check checked-success d-flex align-items-center gap-2">
-                                    <input class="form-check-input" type="checkbox" name="menu_permission[]" value="package_view" id="package_view" <?php echo (in_array('package_view', $menuPermissions) ? 'checked' : ''); ?> />
+                                    <input class="form-check-input" type="checkbox" name="menu_permission[]" value="package_view" id="package_view" <?php echo (in_array('package_view', $menuPermissions) ? 'checked' : ''); ?>>
                                     <label class="form-check-label" for="package_view">Package/Profile</label>
                                 </div>
                                 <div class="form-check checked-success d-flex align-items-center gap-2">
-                                    <input class="form-check-input" type="checkbox" name="menu_permission[]" value="zone_view" id="zone_view" <?php echo (in_array('zone_view', $menuPermissions) ? 'checked' : ''); ?> />
+                                    <input class="form-check-input" type="checkbox" name="menu_permission[]" value="zone_view" id="zone_view" <?php echo (in_array('zone_view', $menuPermissions) ? 'checked' : ''); ?>>
                                     <label class="form-check-label" for="zone_view">Zone/Area</label>
                                 </div>
                                 <div class="form-check checked-success d-flex align-items-center gap-2">
-                                    <input class="form-check-input" type="checkbox" name="menu_permission[]" value="subzone_view" id="subzone_view" <?php echo (in_array('subzone_view', $menuPermissions) ? 'checked' : ''); ?> />
+                                    <input class="form-check-input" type="checkbox" name="menu_permission[]" value="subzone_view" id="subzone_view" <?php echo (in_array('subzone_view', $menuPermissions) ? 'checked' : ''); ?>>
                                     <label class="form-check-label" for="subzone_view">SubZone/SubArea</label>
                                 </div>
                                 <div class="form-check checked-success d-flex align-items-center gap-2">
-                                    <input class="form-check-input" type="checkbox" name="menu_permission[]" value="destination_view" id="destination_view" <?php echo (in_array('destination_view', $menuPermissions) ? 'checked' : ''); ?> />
+                                    <input class="form-check-input" type="checkbox" name="menu_permission[]" value="destination_view" id="destination_view" <?php echo (in_array('destination_view', $menuPermissions) ? 'checked' : ''); ?>>
                                     <label class="form-check-label" for="destination_view">Destination</label>
                                 </div>
                             </div>
@@ -176,19 +176,19 @@ if (!is_array($workPermissions)) {
                             <div class="form-group">
                                 <label class="font-weight-bold">Customer</label>
                                 <div class="form-check checked-success d-flex align-items-center gap-2">
-                                    <input class="form-check-input" type="checkbox" name="menu_permission[]" value="customer_view" id="customer_view" <?php echo (in_array('customer_view', $menuPermissions) ? 'checked' : ''); ?> />
+                                    <input class="form-check-input" type="checkbox" name="menu_permission[]" value="customer_view" id="customer_view" <?php echo (in_array('customer_view', $menuPermissions) ? 'checked' : ''); ?>>
                                     <label class="form-check-label" for="customer_view">Customer List</label>
                                 </div>
                                 <div class="form-check checked-success d-flex align-items-center gap-2">
-                                    <input class="form-check-input" type="checkbox" name="menu_permission[]" value="customer_create" id="customer_create" <?php echo (in_array('customer_create', $menuPermissions) ? 'checked' : ''); ?> />
+                                    <input class="form-check-input" type="checkbox" name="menu_permission[]" value="customer_create" id="customer_create" <?php echo (in_array('customer_create', $menuPermissions) ? 'checked' : ''); ?>>
                                     <label class="form-check-label" for="customer_create">Add Customer</label>
                                 </div>
                                 <div class="form-check checked-success d-flex align-items-center gap-2">
-                                    <input class="form-check-input" type="checkbox" name="menu_permission[]" value="customer_edit" id="customer_edit" <?php echo (in_array('customer_edit', $menuPermissions) ? 'checked' : ''); ?> />
+                                    <input class="form-check-input" type="checkbox" name="menu_permission[]" value="customer_edit" id="customer_edit" <?php echo (in_array('customer_edit', $menuPermissions) ? 'checked' : ''); ?>>
                                     <label class="form-check-label" for="customer_edit">Update Customer</label>
                                 </div>
                                 <div class="form-check checked-success d-flex align-items-center gap-2">
-                                    <input class="form-check-input" type="checkbox" name="menu_permission[]" value="customer_ledger" id="customer_ledger" <?php echo (in_array('customer_ledger', $menuPermissions) ? 'checked' : ''); ?> />
+                                    <input class="form-check-input" type="checkbox" name="menu_permission[]" value="customer_ledger" id="customer_ledger" <?php echo (in_array('customer_ledger', $menuPermissions) ? 'checked' : ''); ?>>
                                     <label class="form-check-label" for="customer_ledger">Customer Ledger</label>
                                 </div>
                             </div>
@@ -198,19 +198,19 @@ if (!is_array($workPermissions)) {
                             <div class="form-group">
                                 <label class="font-weight-bold">Mikrotik</label>
                                 <div class="form-check checked-success d-flex align-items-center gap-2">
-                                    <input class="form-check-input" type="checkbox" name="menu_permission[]" value="mikrotik_connection" id="mikrotik_connection" <?php echo (in_array('mikrotik_connection', $menuPermissions) ? 'checked' : ''); ?> />
+                                    <input class="form-check-input" type="checkbox" name="menu_permission[]" value="mikrotik_connection" id="mikrotik_connection" <?php echo (in_array('mikrotik_connection', $menuPermissions) ? 'checked' : ''); ?>>
                                     <label class="form-check-label" for="mikrotik_connection">Mikrotik List</label>
                                 </div>
                                 <div class="form-check checked-success d-flex align-items-center gap-2">
-                                    <input class="form-check-input" type="checkbox" name="menu_permission[]" value="mikrotik_online_secret" id="mikrotik_online_secret" <?php echo (in_array('mikrotik_online_secret', $menuPermissions) ? 'checked' : ''); ?> />
+                                    <input class="form-check-input" type="checkbox" name="menu_permission[]" value="mikrotik_online_secret" id="mikrotik_online_secret" <?php echo (in_array('mikrotik_online_secret', $menuPermissions) ? 'checked' : ''); ?>>
                                     <label class="form-check-label" for="mikrotik_online_secret">Mikrotik Online Secret </label>
                                 </div>
                                 <div class="form-check checked-success d-flex align-items-center gap-2">
-                                    <input class="form-check-input" type="checkbox" name="menu_permission[]" value="mikrotik_all_secret" id="mikrotik_all_secret" <?php echo (in_array('mikrotik_all_secret', $menuPermissions) ? 'checked' : ''); ?> />
+                                    <input class="form-check-input" type="checkbox" name="menu_permission[]" value="mikrotik_all_secret" id="mikrotik_all_secret" <?php echo (in_array('mikrotik_all_secret', $menuPermissions) ? 'checked' : ''); ?>>
                                     <label class="form-check-label" for="mikrotik_all_secret">Mikrotik All Secret</label>
                                 </div>
                                 <div class="form-check checked-success d-flex align-items-center gap-2">
-                                    <input class="form-check-input" type="checkbox" name="menu_permission[]" value="mikrotik_unmatching_secret" id="mikrotik_unmatching_secret" <?php echo (in_array('mikrotik_unmatching_secret', $menuPermissions) ? 'checked' : ''); ?> />
+                                    <input class="form-check-input" type="checkbox" name="menu_permission[]" value="mikrotik_unmatching_secret" id="mikrotik_unmatching_secret" <?php echo (in_array('mikrotik_unmatching_secret', $menuPermissions) ? 'checked' : ''); ?>>
                                     <label class="form-check-label" for="mikrotik_unmatching_secret">Mikrotik Unmatching Secret</label>
                                 </div>
                             </div>
@@ -219,15 +219,15 @@ if (!is_array($workPermissions)) {
                             <div class="form-group">
                                 <label class="font-weight-bold">Bill Collection</label>
                                 <div class="form-check checked-success d-flex align-items-center gap-2">
-                                    <input class="form-check-input" type="checkbox" name="menu_permission[]" value="billcollection_view" id="billcollection_view" <?php echo (in_array('billcollection_view', $menuPermissions) ? 'checked' : ''); ?> />
+                                    <input class="form-check-input" type="checkbox" name="menu_permission[]" value="billcollection_view" id="billcollection_view" <?php echo (in_array('billcollection_view', $menuPermissions) ? 'checked' : ''); ?>>
                                     <label class="form-check-label" for="billcollection_view">Bill Collection List</label>
                                 </div>
                                 <div class="form-check checked-success d-flex align-items-center gap-2">
-                                    <input class="form-check-input" type="checkbox" name="menu_permission[]" value="all_paid" id="all_paid" <?php echo (in_array('all_paid', $menuPermissions) ? 'checked' : ''); ?> />
+                                    <input class="form-check-input" type="checkbox" name="menu_permission[]" value="all_paid" id="all_paid" <?php echo (in_array('all_paid', $menuPermissions) ? 'checked' : ''); ?>>
                                     <label class="form-check-label" for="all_paid">All paid </label>
                                 </div>
                                 <div class="form-check checked-success d-flex align-items-center gap-2">
-                                    <input class="form-check-input" type="checkbox" name="menu_permission[]" value="previous_due" id="previous_due" <?php echo (in_array('previous_due', $menuPermissions) ? 'checked' : ''); ?> />
+                                    <input class="form-check-input" type="checkbox" name="menu_permission[]" value="previous_due" id="previous_due" <?php echo (in_array('previous_due', $menuPermissions) ? 'checked' : ''); ?>>
                                     <label class="form-check-label" for="previous_due">Previous Due</label>
                                 </div>
                             </div>
@@ -236,11 +236,11 @@ if (!is_array($workPermissions)) {
                             <div class="form-group">
                                 <label class="font-weight-bold">Income</label>
                                 <div class="form-check checked-success d-flex align-items-center gap-2">
-                                    <input class="form-check-input" type="checkbox" name="menu_permission[]" value="view_all_income" id="view_all_income" <?php echo (in_array('view_all_income', $menuPermissions) ? 'checked' : ''); ?> />
+                                    <input class="form-check-input" type="checkbox" name="menu_permission[]" value="view_all_income" id="view_all_income" <?php echo (in_array('view_all_income', $menuPermissions) ? 'checked' : ''); ?>>
                                     <label class="form-check-label" for="view_all_income">Others Income</label>
                                 </div>
                                 <div class="form-check checked-success d-flex align-items-center gap-2">
-                                    <input class="form-check-input" type="checkbox" name="menu_permission[]" value="connection_charge" id="connection_charge" <?php echo (in_array('connection_charge', $menuPermissions) ? 'checked' : ''); ?> />
+                                    <input class="form-check-input" type="checkbox" name="menu_permission[]" value="connection_charge" id="connection_charge" <?php echo (in_array('connection_charge', $menuPermissions) ? 'checked' : ''); ?>>
                                     <label class="form-check-label" for="connection_charge">Connection Charge </label>
                                 </div>
                             </div>
@@ -249,7 +249,7 @@ if (!is_array($workPermissions)) {
                             <div class="form-group">
                                 <label class="font-weight-bold">Discount</label>
                                 <div class="form-check checked-success d-flex align-items-center gap-2">
-                                    <input class="form-check-input" type="checkbox" name="menu_permission[]" value="view_bonous" id="view_bonous" <?php echo (in_array('view_bonous', $menuPermissions) ? 'checked' : ''); ?> />
+                                    <input class="form-check-input" type="checkbox" name="menu_permission[]" value="view_bonous" id="view_bonous" <?php echo (in_array('view_bonous', $menuPermissions) ? 'checked' : ''); ?>>
                                     <label class="form-check-label" for="view_bonous">Discount List</label>
                                 </div>
                             </div>
@@ -258,7 +258,7 @@ if (!is_array($workPermissions)) {
                             <div class="form-group">
                                 <label class="font-weight-bold">Expense</label>
                                 <div class="form-check checked-success d-flex align-items-center gap-2">
-                                    <input class="form-check-input" type="checkbox" name="menu_permission[]" value="view_expence" id="view_expence" <?php echo (in_array('view_expence', $menuPermissions) ? 'checked' : ''); ?> />
+                                    <input class="form-check-input" type="checkbox" name="menu_permission[]" value="view_expence" id="view_expence" <?php echo (in_array('view_expence', $menuPermissions) ? 'checked' : ''); ?>>
                                     <label class="form-check-label" for="view_expence">View Expense</label>
                                 </div>
                             </div>
@@ -267,11 +267,11 @@ if (!is_array($workPermissions)) {
                             <div class="form-group">
                                 <label class="font-weight-bold">Account Head</label>
                                 <div class="form-check checked-success d-flex align-items-center gap-2">
-                                    <input class="form-check-input" type="checkbox" name="menu_permission[]" value="account_head_view" id="account_head_view" <?php echo (in_array('account_head_view', $menuPermissions) ? 'checked' : ''); ?> />
+                                    <input class="form-check-input" type="checkbox" name="menu_permission[]" value="account_head_view" id="account_head_view" <?php echo (in_array('account_head_view', $menuPermissions) ? 'checked' : ''); ?>>
                                     <label class="form-check-label" for="account_head_view">Account Head</label>
                                 </div>
                                 <div class="form-check checked-success d-flex align-items-center gap-2">
-                                    <input class="form-check-input" type="checkbox" name="menu_permission[]" value="account_sub_head_view" id="account_sub_head_view" <?php echo (in_array('account_sub_head_view', $menuPermissions) ? 'checked' : ''); ?> />
+                                    <input class="form-check-input" type="checkbox" name="menu_permission[]" value="account_sub_head_view" id="account_sub_head_view" <?php echo (in_array('account_sub_head_view', $menuPermissions) ? 'checked' : ''); ?>>
                                     <label class="form-check-label" for="account_sub_head_view">Account Sub Head</label>
                                 </div>
                             </div>
@@ -280,11 +280,11 @@ if (!is_array($workPermissions)) {
                             <div class="form-group">
                                 <label class="font-weight-bold">Employee</label>
                                 <div class="form-check checked-success d-flex align-items-center gap-2">
-                                    <input class="form-check-input" type="checkbox" name="menu_permission[]" value="employee_view" id="employee_view" <?php echo (in_array('employee_view', $menuPermissions) ? 'checked' : ''); ?> />
+                                    <input class="form-check-input" type="checkbox" name="menu_permission[]" value="employee_view" id="employee_view" <?php echo (in_array('employee_view', $menuPermissions) ? 'checked' : ''); ?>>
                                     <label class="form-check-label" for="employee_view">Employee List</label>
                                 </div>
                                 <div class="form-check checked-success d-flex align-items-center gap-2">
-                                    <input class="form-check-input" type="checkbox" name="menu_permission[]" value="employee_edit" id="employee_edit" <?php echo (in_array('employee_edit', $menuPermissions) ? 'checked' : ''); ?> />
+                                    <input class="form-check-input" type="checkbox" name="menu_permission[]" value="employee_edit" id="employee_edit" <?php echo (in_array('employee_edit', $menuPermissions) ? 'checked' : ''); ?>>
                                     <label class="form-check-label" for="employee_edit">Employee Update</label>
                                 </div>
                             </div>
@@ -295,15 +295,15 @@ if (!is_array($workPermissions)) {
                             <div class="form-group">
                                 <label class="font-weight-bold">Balance Sheet</label>
                                 <div class="form-check checked-success d-flex align-items-center gap-2">
-                                    <input class="form-check-input" type="checkbox" name="menu_permission[]" value="monthly_new" id="monthly_new" <?php echo (in_array('monthly_new', $menuPermissions) ? 'checked' : ''); ?> />
+                                    <input class="form-check-input" type="checkbox" name="menu_permission[]" value="monthly_new" id="monthly_new" <?php echo (in_array('monthly_new', $menuPermissions) ? 'checked' : ''); ?>>
                                     <label class="form-check-label" for="monthly_new">Monthly Balance Report</label>
                                 </div>
                                 <div class="form-check checked-success d-flex align-items-center gap-2">
-                                    <input class="form-check-input" type="checkbox" name="menu_permission[]" value="yearly" id="yearly" <?php echo (in_array('yearly', $menuPermissions) ? 'checked' : ''); ?> />
+                                    <input class="form-check-input" type="checkbox" name="menu_permission[]" value="yearly" id="yearly" <?php echo (in_array('yearly', $menuPermissions) ? 'checked' : ''); ?>>
                                     <label class="form-check-label" for="yearly">yearly Balance Report</label>
                                 </div>
                                 <div class="form-check checked-success d-flex align-items-center gap-2">
-                                    <input class="form-check-input" type="checkbox" name="menu_permission[]" value="customer_billing_history" id="customer_billing_history" <?php echo (in_array('customer_billing_history', $menuPermissions) ? 'checked' : ''); ?> />
+                                    <input class="form-check-input" type="checkbox" name="menu_permission[]" value="customer_billing_history" id="customer_billing_history" <?php echo (in_array('customer_billing_history', $menuPermissions) ? 'checked' : ''); ?>>
                                     <label class="form-check-label" for="customer_billing_history">Customer Billing History</label>
                                 </div>
                             </div>
@@ -312,7 +312,7 @@ if (!is_array($workPermissions)) {
                             <div class="form-group">
                                 <label class="font-weight-bold">Statement</label>
                                 <div class="form-check checked-success d-flex align-items-center gap-2">
-                                    <input class="form-check-input" type="checkbox" name="menu_permission[]" value="accounts_statement" id="accounts_statement" <?php echo (in_array('accounts_statement', $menuPermissions) ? 'checked' : ''); ?> />
+                                    <input class="form-check-input" type="checkbox" name="menu_permission[]" value="accounts_statement" id="accounts_statement" <?php echo (in_array('accounts_statement', $menuPermissions) ? 'checked' : ''); ?>>
                                     <label class="form-check-label" for="accounts_statement">Accounts Statement</label>
                                 </div>
                             </div>
@@ -321,27 +321,27 @@ if (!is_array($workPermissions)) {
                             <div class="form-group">
                                 <label class="font-weight-bold">Complain</label>
                                 <div class="form-check checked-success d-flex align-items-center gap-2">
-                                    <input class="form-check-input" type="checkbox" name="menu_permission[]" value="view_complain" id="view_complain" <?php echo (in_array('view_complain', $menuPermissions) ? 'checked' : ''); ?> />
+                                    <input class="form-check-input" type="checkbox" name="menu_permission[]" value="view_complain" id="view_complain" <?php echo (in_array('view_complain', $menuPermissions) ? 'checked' : ''); ?>>
                                     <label class="form-check-label" for="view_complain">Complain List</label>
                                 </div>
                                 <div class="form-check checked-success d-flex align-items-center gap-2">
-                                    <input class="form-check-input" type="checkbox" name="menu_permission[]" value="add_complain" id="add_complain" <?php echo (in_array('add_complain', $menuPermissions) ? 'checked' : ''); ?> />
+                                    <input class="form-check-input" type="checkbox" name="menu_permission[]" value="add_complain" id="add_complain" <?php echo (in_array('add_complain', $menuPermissions) ? 'checked' : ''); ?>>
                                     <label class="form-check-label" for="add_complain">Create Complain</label>
                                 </div>
                                 <div class="form-check checked-success d-flex align-items-center gap-2">
-                                    <input class="form-check-input" type="checkbox" name="menu_permission[]" value="edit_complain" id="edit_complain" <?php echo (in_array('edit_complain', $menuPermissions) ? 'checked' : ''); ?> />
+                                    <input class="form-check-input" type="checkbox" name="menu_permission[]" value="edit_complain" id="edit_complain" <?php echo (in_array('edit_complain', $menuPermissions) ? 'checked' : ''); ?>>
                                     <label class="form-check-label" for="edit_complain">Update Complain</label>
                                 </div>
                                 <div class="form-check checked-success d-flex align-items-center gap-2">
-                                    <input class="form-check-input" type="checkbox" name="menu_permission[]" value="complain_template" id="complain_template" <?php echo (in_array('complain_template', $menuPermissions) ? 'checked' : ''); ?> />
+                                    <input class="form-check-input" type="checkbox" name="menu_permission[]" value="complain_template" id="complain_template" <?php echo (in_array('complain_template', $menuPermissions) ? 'checked' : ''); ?>>
                                     <label class="form-check-label" for="complain_template">Complain Template List</label>
                                 </div>
                                 <div class="form-check checked-success d-flex align-items-center gap-2">
-                                    <input class="form-check-input" type="checkbox" name="menu_permission[]" value="edit_complain_template" id="edit_complain_template" <?php echo (in_array('edit_complain_template', $menuPermissions) ? 'checked' : ''); ?> />
+                                    <input class="form-check-input" type="checkbox" name="menu_permission[]" value="edit_complain_template" id="edit_complain_template" <?php echo (in_array('edit_complain_template', $menuPermissions) ? 'checked' : ''); ?>>
                                     <label class="form-check-label" for="edit_complain_template">Update Complain Template </label>
                                 </div>
                                 <div class="form-check checked-success d-flex align-items-center gap-2">
-                                    <input class="form-check-input" type="checkbox" name="menu_permission[]" value="individual_complain_details" id="individual_complain_details" <?php echo (in_array('individual_complain_details', $menuPermissions) ? 'checked' : ''); ?> />
+                                    <input class="form-check-input" type="checkbox" name="menu_permission[]" value="individual_complain_details" id="individual_complain_details" <?php echo (in_array('individual_complain_details', $menuPermissions) ? 'checked' : ''); ?>>
                                     <label class="form-check-label" for="individual_complain_details">Individual Complain Template Details</label>
                                 </div>
 
@@ -351,7 +351,7 @@ if (!is_array($workPermissions)) {
                             <div class="form-group">
                                 <label class="font-weight-bold">Diagram</label>
                                 <div class="form-check checked-success d-flex align-items-center gap-2">
-                                    <input class="form-check-input" type="checkbox" name="menu_permission[]" value="view_diagram" id="view_diagram" <?php echo (in_array('view_diagram', $menuPermissions) ? 'checked' : ''); ?> />
+                                    <input class="form-check-input" type="checkbox" name="menu_permission[]" value="view_diagram" id="view_diagram" <?php echo (in_array('view_diagram', $menuPermissions) ? 'checked' : ''); ?>>
                                     <label class="form-check-label" for="view_diagram">View Diagram</label>
                                 </div>
                             </div>
@@ -360,35 +360,35 @@ if (!is_array($workPermissions)) {
                             <div class="form-group">
                                 <label>Inventory</label>
                                 <div class="form-check checked-success d-flex align-items-center gap-2">
-                                    <input class="form-check-input" type="checkbox" name="menu_permission[]" value="product_category" id="product_category" <?php echo (in_array('product_category', $menuPermissions) ? 'checked' : ''); ?> />
+                                    <input class="form-check-input" type="checkbox" name="menu_permission[]" value="product_category" id="product_category" <?php echo (in_array('product_category', $menuPermissions) ? 'checked' : ''); ?>>
                                     <label class="form-check-label" for="product_category">Product Category</label>
                                 </div>
                                 <div class="form-check checked-success d-flex align-items-center gap-2">
-                                    <input class="form-check-input" type="checkbox" name="menu_permission[]" value="product" id="product" <?php echo (in_array('product', $menuPermissions) ? 'checked' : ''); ?> />
+                                    <input class="form-check-input" type="checkbox" name="menu_permission[]" value="product" id="product" <?php echo (in_array('product', $menuPermissions) ? 'checked' : ''); ?>>
                                     <label class="form-check-label" for="product">Product</label>
                                 </div>
                                 <div class="form-check checked-success d-flex align-items-center gap-2">
-                                    <input class="form-check-input" type="checkbox" name="menu_permission[]" value="supplier" id="supplier" <?php echo (in_array('supplier', $menuPermissions) ? 'checked' : ''); ?> />
+                                    <input class="form-check-input" type="checkbox" name="menu_permission[]" value="supplier" id="supplier" <?php echo (in_array('supplier', $menuPermissions) ? 'checked' : ''); ?>>
                                     <label class="form-check-label" for="supplier">Supplier</label>
                                 </div>
                                 <div class="form-check checked-success d-flex align-items-center gap-2">
-                                    <input class="form-check-input" type="checkbox" name="menu_permission[]" value="purchase" id="purchase" <?php echo (in_array('purchase', $menuPermissions) ? 'checked' : ''); ?> />
+                                    <input class="form-check-input" type="checkbox" name="menu_permission[]" value="purchase" id="purchase" <?php echo (in_array('purchase', $menuPermissions) ? 'checked' : ''); ?>>
                                     <label class="form-check-label" for="purchase">Purchase</label>
                                 </div>
                                 <div class="form-check checked-success d-flex align-items-center gap-2">
-                                    <input class="form-check-input" type="checkbox" name="menu_permission[]" value="sales" id="sales" <?php echo (in_array('sales', $menuPermissions) ? 'checked' : ''); ?> />
+                                    <input class="form-check-input" type="checkbox" name="menu_permission[]" value="sales" id="sales" <?php echo (in_array('sales', $menuPermissions) ? 'checked' : ''); ?>>
                                     <label class="form-check-label" for="sales">Sales</label>
                                 </div>
                                 <div class="form-check checked-success d-flex align-items-center gap-2">
-                                    <input class="form-check-input" type="checkbox" name="menu_permission[]" value="stock" id="stock" <?php echo (in_array('stock', $menuPermissions) ? 'checked' : ''); ?> />
+                                    <input class="form-check-input" type="checkbox" name="menu_permission[]" value="stock" id="stock" <?php echo (in_array('stock', $menuPermissions) ? 'checked' : ''); ?>>
                                     <label class="form-check-label" for="stock">Stock</label>
                                 </div>
                                 <div class="form-check checked-success d-flex align-items-center gap-2">
-                                    <input class="form-check-input" type="checkbox" name="menu_permission[]" value="customer_return" id="customer_return" <?php echo (in_array('customer_return', $menuPermissions) ? 'checked' : ''); ?> />
+                                    <input class="form-check-input" type="checkbox" name="menu_permission[]" value="customer_return" id="customer_return" <?php echo (in_array('customer_return', $menuPermissions) ? 'checked' : ''); ?>>
                                     <label class="form-check-label" for="customer_return">Customer Return</label>
                                 </div>
                                 <div class="form-check checked-success d-flex align-items-center gap-2">
-                                    <input class="form-check-input" type="checkbox" name="menu_permission[]" value="supplier_return" id="supplier_return" <?php echo (in_array('supplier_return', $menuPermissions) ? 'checked' : ''); ?> />
+                                    <input class="form-check-input" type="checkbox" name="menu_permission[]" value="supplier_return" id="supplier_return" <?php echo (in_array('supplier_return', $menuPermissions) ? 'checked' : ''); ?>>
                                     <label class="form-check-label" for="supplier_return">Supplier Return</label>
                                 </div>
                             </div>
