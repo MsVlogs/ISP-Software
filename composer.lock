@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "9bb71dbc08bfb8fe65aff7779f506b32",
+    "content-hash": "f404e3a2ae2998f4bc90ae2c2557f69b",
     "packages": [
         {
             "name": "freedsx/asn1",
