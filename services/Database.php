@@ -4,8 +4,8 @@ class Database
     protected $connect;  // Change to protected so subclasses can access it
     private $host = "localhost";
     private $user = "root";
-    private $db = "isp";
-    private $pass = "";
+    private $db = "isp_db";
+    private $pass = "password";
 
     public function __construct()
     {

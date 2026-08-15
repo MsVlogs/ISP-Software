@@ -99,7 +99,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 // Case 3: Retrieve single data using GET method (for fetching data to populate the modal)
 elseif ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['mkid'])) {
     $id = $_GET['mkid'];
-    // $user = $obj->getSingleData('mikrotik_user', ['id' => $id]);
+    $user = $obj->getSingleData('mikrotik_user', ['id' => $id]);
     $user = $obj->details_by_cond("mikrotik_user", "id='$id'");
 
     if ($user) {

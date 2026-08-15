@@ -2,8 +2,8 @@
 require 'vendor/autoload.php'; // FreeDSx SNMP
 
 // $ip = '172.35.156.14';
-$ip = '103.178.220.124:50501';
-$community = 'bsd';
+$ip = '103.103.33.114:161';
+$community = 'BDCOM-OLT-1';
 
 $error = null;
 $device = [];

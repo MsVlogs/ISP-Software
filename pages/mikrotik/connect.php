@@ -172,9 +172,9 @@
                 },
                 {
                     "data": "status",
-                    // "render": function(data, type, row) {
-                    //     return data ? "Enabled" : "Disabled";
-                    // }
+                    "render": function(data, type, row) {
+                        return data ? "Enabled" : "Disabled";
+                    }
                 },
                 {
                     "data": "id",
