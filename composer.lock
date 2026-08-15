@@ -67,29 +67,29 @@
         },
         {
             "name": "freedsx/snmp",
-            "version": "0.5.0",
+            "version": "0.5.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/FreeDSx/SNMP.git",
-                "reference": "b6d45b0d1108402b8b14af96221398a173d9ee5e"
+                "reference": "9f10decd91c2562930d3234f4911dc4c7f8b03f3"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/FreeDSx/SNMP/zipball/b6d45b0d1108402b8b14af96221398a173d9ee5e",
-                "reference": "b6d45b0d1108402b8b14af96221398a173d9ee5e",
+                "url": "https://api.github.com/repos/FreeDSx/SNMP/zipball/9f10decd91c2562930d3234f4911dc4c7f8b03f3",
+                "reference": "9f10decd91c2562930d3234f4911dc4c7f8b03f3",
                 "shasum": ""
             },
             "require": {
-                "freedsx/asn1": "^0.4.0",
-                "freedsx/socket": "^0.3.0",
+                "freedsx/asn1": ">=0.4,<1.0",
+                "freedsx/socket": ">=0.3,<1.0",
                 "php": ">=7.1"
             },
             "require-dev": {
-                "friendsofphp/php-cs-fixer": "^2",
-                "phpspec/phpspec": "^5.1|^6.1|^7.1",
-                "phpstan/phpstan": "^0.11|^0.12",
-                "phpunit/phpunit": "^7.5|^8.5|^9.5",
-                "symfony/process": "^3|^4|^5"
+                "friendsofphp/php-cs-fixer": "^2.19 || ^3.0",
+                "phpspec/phpspec": "^5.1 || ^6.1 || ^7.1 || ^8.0",
+                "phpstan/phpstan": "^0.12.99 || ^1.12 || ^2.1",
+                "phpunit/phpunit": "^7.5 || ^8.5 || ^9.5",
+                "symfony/process": "^3.4 || ^4.4 || ^5.4 || ^6.4 || ^7.0"
             },
             "suggest": {
                 "ext-gmp": "Needed for counter64 bigint SNMP values.",
@@ -118,32 +118,32 @@
             ],
             "support": {
                 "issues": "https://github.com/FreeDSx/SNMP/issues",
-                "source": "https://github.com/FreeDSx/SNMP/tree/0.5.0"
+                "source": "https://github.com/FreeDSx/SNMP/tree/0.5.3"
             },
-            "time": "2022-01-29T15:15:10+00:00"
+            "time": "2026-05-24T16:27:41+00:00"
         },
         {
             "name": "freedsx/socket",
-            "version": "0.3.1",
+            "version": "0.6.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/FreeDSx/Socket.git",
-                "reference": "51441af8bff810b3a46af3cf65e1e4edbd83e939"
+                "reference": "d0c8c6f684582e5ddbf5fc3d59d2316d3914b271"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/FreeDSx/Socket/zipball/51441af8bff810b3a46af3cf65e1e4edbd83e939",
-                "reference": "51441af8bff810b3a46af3cf65e1e4edbd83e939",
+                "url": "https://api.github.com/repos/FreeDSx/Socket/zipball/d0c8c6f684582e5ddbf5fc3d59d2316d3914b271",
+                "reference": "d0c8c6f684582e5ddbf5fc3d59d2316d3914b271",
                 "shasum": ""
             },
             "require": {
                 "php": ">=7.1"
             },
             "require-dev": {
-                "freedsx/asn1": "^0.4.0",
-                "phpspec/phpspec": "^5.0",
-                "phpstan/phpstan": "^0.11.15",
-                "phpstan/phpstan-strict-rules": "^0.11.1"
+                "freedsx/asn1": ">=0.4, <1.0",
+                "friends-of-phpspec/phpspec-code-coverage": "^6.1|^7.0",
+                "phpspec/phpspec": "^7.1|^8.0",
+                "phpstan/phpstan": "^2.0"
             },
             "suggest": {
                 "ext-openssl": "For SSL/TLS support.",
@@ -174,9 +174,9 @@
             ],
             "support": {
                 "issues": "https://github.com/FreeDSx/Socket/issues",
-                "source": "https://github.com/FreeDSx/Socket/tree/master"
+                "source": "https://github.com/FreeDSx/Socket/tree/0.6.3"
             },
-            "time": "2019-09-01T23:07:27+00:00"
+            "time": "2026-04-25T17:18:43+00:00"
         }
     ],
     "packages-dev": [],
@@ -187,5 +187,5 @@
     "prefer-lowest": false,
     "platform": {},
     "platform-dev": {},
-    "plugin-api-version": "2.6.0"
+    "plugin-api-version": "2.9.0"
 }
