@@ -17,15 +17,9 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Gemini Pull Request Reviewer
-        uses: google-gemini/gemini-pr-review-action@v1 # অথবা কমিউনিটি প্রিপেয়ার্ড কোনো জনপ্রিয় অ্যাকশন
+      - name: Gemini Code Review
+        uses: google-gemini/gemini-pr-review-action@v1.1.0
         with:
           gemini_api_key: ${{ secrets.GEMINI_API_KEY }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
           model: 'gemini-2.5-pro'
-          prompt: |
-            You are an expert code reviewer. Analyze the code changes in this Pull Request.
-            Provide constructive feedback covering:
-            1. Potential bugs or edge cases.
-            2. Performance improvements.
-            3. Readability and clean code practices.
-            Keep the output concise and formatted in Markdown.
