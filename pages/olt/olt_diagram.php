@@ -1,14 +1,32 @@
 <?php
 set_time_limit(0);
 
-// === OLT credentials & OIDs ===
-$oltIp = "103.178.220.124:50501";
-$community = "bsd";
+// Get selected OLT from session or default to first active OLT
+$selectedOltId = $_SESSION['selected_olt_id'] ?? null;
+$oltDevices = $obj->view_all_by_cond('tbl_olt_devices', 'status=1') ?? [];
+
+if (!$selectedOltId && !empty($oltDevices)) {
+    $selectedOltId = $oltDevices[0]['olt_id'];
+    $_SESSION['selected_olt_id'] = $selectedOltId;
+}
+
+// Get current OLT details
+$currentOlt = $obj->view_by_id('tbl_olt_devices', $selectedOltId);
+
+if (!$currentOlt) {
+    echo '<div class="alert alert-danger">No OLT device selected or configured. Please configure OLT devices first.</div>';
+    return;
+}
+
+// OLT credentials from database
+$oltIp = $currentOlt['olt_ip'] . ':' . $currentOlt['olt_port'];
+$community = $currentOlt['community'];
+
+// OIDs for SNMP
 $oids = [
     'descr'       => "1.3.6.1.2.1.2.2.1.2",
     'oper_status' => "1.3.6.1.2.1.2.2.1.8"
 ];
-// snmpbulkwalk -v2c -c bsd -Cr10 -t 4 -r 1 -Cc 103.178.220.124:50501
 
 // SNMP fetch function
 function snmpBulkFetch($community, $oltIp, $oids){
@@ -16,11 +34,9 @@ function snmpBulkFetch($community, $oltIp, $oids){
     foreach($oids as $key=>$oid){
         $lines = explode("\n", trim(shell_exec("snmpbulkwalk -v2c -c $community -t 2 -r 2 $oltIp $oid 2>&1")));
         foreach($lines as $line){
-            // match integer or string values
             if(preg_match('/\.(\d+)\s*=\s*(?:STRING|INTEGER):\s*(.*)$/i', trim($line), $m)){
                 $index = $m[1];
                 $value = trim($m[2], "\" ");
-                // clean INTEGER prefix
                 $value = preg_replace('/^INTEGER:\s*/i', '', $value);
                 $value = preg_replace('/^STRING:\s*/i', '', $value);
                 $data[$index][$key] = $value;
@@ -45,7 +61,7 @@ $statusMap = [
 ];
 
 foreach($onuData as $idx => $onu){
-    $rawStatus = (int)preg_replace('/\D/', '', $onu['oper_status'] ?? '0'); // extract numeric only
+    $rawStatus = (int)preg_replace('/\D/', '', $onu['oper_status'] ?? '0');
     $onuData[$idx]['status'] = $statusMap[$rawStatus] ?? 'Unknown';
 }
 
@@ -81,12 +97,29 @@ foreach($eponTree as $port=>$data){
     }
 }
 $nodesColor['OLT'] = '#000000';
-
-// Optional debug (you can comment out later)
-// echo "<pre>"; print_r($onuData); echo "</pre>";
 ?>
 
-<div id="container" style="height: 600px;"></div>
+<div class="col-md-12">
+    <div class="card">
+        <div class="card-header">
+            <div class="d-flex justify-content-between align-items-center">
+                <h6 class="text-md text-neutral-500">OLT Network Diagram</h6>
+                <div class="form-group" style="width: 250px; margin: 0;">
+                    <select id="oltSelector" class="form-control form-select" onchange="changeOlt(this.value)">
+                        <?php foreach($oltDevices as $olt): ?>
+                            <option value="<?php echo $olt['olt_id']; ?>" <?php echo $olt['olt_id'] == $selectedOltId ? 'selected' : ''; ?>>
+                                <?php echo htmlspecialchars($olt['olt_name'] . ' (' . $olt['olt_ip'] . ')'); ?>
+                            </option>
+                        <?php endforeach; ?>
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div class="card-body">
+            <div id="container" style="height: 600px;"></div>
+        </div>
+    </div>
+</div>
 
 <script src="https://code.highcharts.com/highcharts.js"></script>
 <script src="https://code.highcharts.com/modules/networkgraph.js"></script>
@@ -94,7 +127,7 @@ $nodesColor['OLT'] = '#000000';
 <script>
 Highcharts.chart('container', {
     chart: { type: 'networkgraph', marginTop: 80 },
-    title: { text: 'OLT → EPON → ONU Network Diagram (Dynamic SNMP)' },
+    title: { text: 'OLT → EPON → ONU Network Diagram (<?php echo htmlspecialchars($currentOlt['olt_name']); ?>)' },
     plotOptions: {
         networkgraph: {
             keys: ['from', 'to'],
@@ -114,4 +147,10 @@ Highcharts.chart('container', {
         ?>
     }]
 });
+
+function changeOlt(oltId) {
+    fetch('pages/olt/set_selected_olt.php?olt_id=' + oltId)
+        .then(() => location.reload())
+        .catch(err => console.error('Error:', err));
+}
 </script>
