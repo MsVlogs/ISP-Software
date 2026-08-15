@@ -118,6 +118,20 @@
         $title = "Business Target";
     }elseif ($page == 'brtcreport') {
         $title = "BTRC Report";
+    } elseif ($page == 'olt_management') {
+        $title = "OLT Management";
+    } elseif ($page == 'device_condition') {
+        $title = "Device Condition";
+    } elseif ($page == 'device_info') {
+        $title = "Device Info";
+    } elseif ($page == 'interface_state') {
+        $title = "Interface State";
+    } elseif ($page == 'olt_diagram') {
+        $title = "OLT Diagram";
+    } elseif ($page == 'fetch_onu_data') {
+        $title = "Fetch ONU Data";
+    } elseif ($page == 'fetch_interface_data') {
+        $title = "Fetch Interface Data";
     } else {
         $title = "Dashboard";
     }
@@ -140,10 +154,10 @@
             /* Adjust height as needed, for example, subtracting header/footer height */
         }
         @media (min-width: 1400px) {
-  .dashboard-main {
-    margin-inline-start: 15.1875rem;
-  }
-}
+   .dashboard-main {
+     margin-inline-start: 15.1875rem;
+   }
+ }
     </style>
 
 </head>
