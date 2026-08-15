@@ -1,6 +1,14 @@
 CHANGELOG
 =========
 
+0.5.3 (2026-05-24)
+------------------
+* Support up to PHP 8.5.
+
+0.5.1 (2026-04-25)
+------------------
+* Lock FreeDSx dependencies to avoid conflicts with a 1.0 release.
+
 0.5.0 (2022-01-29)
 ------------------
 * Many static analysis fixes. The PhpStan level is now set to max.

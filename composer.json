@@ -1,5 +1,7 @@
 {
     "require": {
-        "freedsx/snmp": "^0.5.0"
+        "freedsx/snmp": "^0.5.0",
+	"php": "^8.3",
+	"setasign/fpdi": "^2.6.4"
     }
 }

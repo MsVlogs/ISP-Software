@@ -6,6 +6,7 @@ $vendorDir = dirname(__DIR__);
 $baseDir = dirname($vendorDir);
 
 return array(
+    'setasign\\Fpdi\\' => array($vendorDir . '/setasign/fpdi/src'),
     'FreeDSx\\Socket\\' => array($vendorDir . '/freedsx/socket/src/FreeDSx/Socket'),
     'FreeDSx\\Snmp\\' => array($vendorDir . '/freedsx/snmp/src/FreeDSx/Snmp'),
     'FreeDSx\\Asn1\\' => array($vendorDir . '/freedsx/asn1/src/FreeDSx/Asn1'),

@@ -13,18 +13,25 @@ namespace spec\FreeDSx\Socket;
 use FreeDSx\Socket\Exception\ConnectionException;
 use FreeDSx\Socket\Socket;
 use FreeDSx\Socket\SocketServer;
+use PhpSpec\Exception\Example\SkippingException;
 use PhpSpec\ObjectBehavior;
 
 class SocketServerSpec extends ObjectBehavior
 {
+    private $testSocket = '';
+
     function let()
     {
+        $this->testSocket = sys_get_temp_dir() . '/phpspec.socket';
         $this->beConstructedThrough('bind', ['0.0.0.0', 33389]);
     }
 
     function letGo()
     {
         @$this->close();
+        if ($this->testSocket && file_exists($this->testSocket)) {
+            @unlink($this->testSocket);
+        }
     }
 
     function it_is_initializable()
@@ -49,6 +56,9 @@ class SocketServerSpec extends ObjectBehavior
         $this->beConstructedThrough('bindTcp', ['0.0.0.0', 33389]);
 
         $this->getOptions()->shouldHaveKeyWithValue('transport', 'tcp');
+        $this->isConnected()->shouldBeEqualTo(true);
+        $this->close();
+        $this->isConnected()->shouldBeEqualTo(false);
     }
 
     function it_should_construct_a_udp_based_socket_server()
@@ -58,9 +68,25 @@ class SocketServerSpec extends ObjectBehavior
         $this->getOptions()->shouldHaveKeyWithValue('transport', 'udp');
     }
 
+    function it_should_construct_a_unix_based_socket_server()
+    {
+        if (stripos(PHP_OS, 'WIN') === 0) {
+            throw new SkippingException('Unix socket not available in Windows.');
+        }
+
+        $this->beConstructedThrough('bindUnix', [$this->testSocket]);
+
+        $this->getOptions()->shouldHaveKeyWithValue('transport', 'unix');
+        $this->isConnected()->shouldBeEqualTo(true);
+        $this->close();
+        $this->isConnected()->shouldBeEqualTo(false);
+    }
+
     function it_should_receive_data()
     {
         $this->beConstructedThrough('bindUdp', ['0.0.0.0', 33389]);
+        # This is here to force PhpSpec to construct the object. It needs to be constructed to write to it.
+        # Otherwise, the test would hang...
         $this->getOptions();
 
         $socket = Socket::udp('127.0.0.1', ['port' => 33389]);

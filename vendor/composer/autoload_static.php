@@ -7,7 +7,11 @@ namespace Composer\Autoload;
 class ComposerStaticInitc1fe61cae9e7c261c8ccd4434d1abbec
 {
     public static $prefixLengthsPsr4 = array (
-        'F' => 
+        's' =>
+        array (
+            'setasign\\Fpdi\\' => 14,
+        ),
+        'F' =>
         array (
             'FreeDSx\\Socket\\' => 15,
             'FreeDSx\\Snmp\\' => 13,
@@ -16,15 +20,19 @@ class ComposerStaticInitc1fe61cae9e7c261c8ccd4434d1abbec
     );
 
     public static $prefixDirsPsr4 = array (
-        'FreeDSx\\Socket\\' => 
+        'setasign\\Fpdi\\' =>
+        array (
+            0 => __DIR__ . '/..' . '/setasign/fpdi/src',
+        ),
+        'FreeDSx\\Socket\\' =>
         array (
             0 => __DIR__ . '/..' . '/freedsx/socket/src/FreeDSx/Socket',
         ),
-        'FreeDSx\\Snmp\\' => 
+        'FreeDSx\\Snmp\\' =>
         array (
             0 => __DIR__ . '/..' . '/freedsx/snmp/src/FreeDSx/Snmp',
         ),
-        'FreeDSx\\Asn1\\' => 
+        'FreeDSx\\Asn1\\' =>
         array (
             0 => __DIR__ . '/..' . '/freedsx/asn1/src/FreeDSx/Asn1',
         ),
