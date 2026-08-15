@@ -1,0 +1,31 @@
+name: Gemini PR Code Review
+
+on:
+  pull_request:
+    types: [opened, synchronize]
+
+jobs:
+  review:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Gemini Pull Request Reviewer
+        uses: google-gemini/gemini-pr-review-action@v1 # অথবা কমিউনিটি প্রিপেয়ার্ড কোনো জনপ্রিয় অ্যাকশন
+        with:
+          gemini_api_key: ${{ secrets.GEMINI_API_KEY }}
+          model: 'gemini-2.5-pro'
+          prompt: |
+            You are an expert code reviewer. Analyze the code changes in this Pull Request.
+            Provide constructive feedback covering:
+            1. Potential bugs or edge cases.
+            2. Performance improvements.
+            3. Readability and clean code practices.
+            Keep the output concise and formatted in Markdown.
