@@ -7,3 +7,4 @@ function calculateTotal($items) {
     }
     return $total;
 }
+// Trigger Gemini Action
