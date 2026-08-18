@@ -66,3 +66,4 @@ if (!$login) {
 } else {
 
     if ($page == 'login') header('Location: ?page=dashboard');
+}
