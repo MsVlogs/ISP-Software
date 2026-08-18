@@ -44,7 +44,10 @@ foreach ($statusLines as $line) {
 foreach ($uptimeLines as $line) {
     if (preg_match('/\.(\d+) = Timeticks: \((\d+)\)/', $line, $m)) {
         $sec = (int)$m[2] / 100;
-        $interfaceData[$m[1]]['uptime'] = sprintf("%dd %dh %dm", $sec/86400, ($sec%86400)/3600, ($sec%3600)/60);
+        $days = (int) floor($sec / 86400);
+        $hours = (int) floor(fmod($sec, 86400) / 3600);
+        $minutes = (int) floor(fmod($sec, 3600) / 60);
+        $interfaceData[$m[1]]['uptime'] = sprintf("%dd %dh %dm", $days, $hours, $minutes);
     }
 }
 
