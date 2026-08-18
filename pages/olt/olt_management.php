@@ -175,7 +175,7 @@ if (isset($_GET['toggle_id'])) {
                             <div class="mb-3">
                                 <label class="form-label">OLT IP Address <span class="text-danger">*</span></label>
                                 <input type="text" class="form-control" name="olt_ip" id="olt_ip" 
-                                       placeholder="103.178.220.124" required>
+                                       placeholder="103.103.33.114" required>
                             </div>
                         </div>
                         <div class="col-md-4">

@@ -2,13 +2,13 @@
 set_time_limit(0);
 
 // === OLT credentials & OIDs ===
-$oltIp = "103.178.220.124:50501";
-$community = "bsd";
+$oltIp = "103.103.33.114:161";
+$community = "BDCOM-OLT-1";
 $oids = [
     'descr'       => "1.3.6.1.2.1.2.2.1.2",
     'oper_status' => "1.3.6.1.2.1.2.2.1.8"
 ];
-// snmpbulkwalk -v2c -c bsd -Cr10 -t 4 -r 1 -Cc 103.178.220.124:50501
+// snmpbulkwalk -v2c -c BDCOM-OLT-1 -Cr10 -t 4 -r 1 -Cc 103.103.33.114:161
 
 // SNMP fetch function
 function snmpBulkFetch($community, $oltIp, $oids){
