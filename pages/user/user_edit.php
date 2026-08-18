@@ -153,6 +153,31 @@ if ($workPermissions === false || !is_array($workPermissions)) {
                         </div>
                         <div class="col-md-3">
                             <div class="form-group">
+                                <label class="font-weight-bold">OLT</label>
+                                <div class="form-check checked-success d-flex align-items-center gap-2">
+                                    <input class="form-check-input" type="checkbox" name="menu_permission[]" value="olt_management" id="olt_management" <?php echo (in_array('olt_management', $menuPermissions) ? 'checked' : ''); ?>>
+                                    <label class="form-check-label" for="olt_management">OLT Management (Add/Active/Inactive/Delete)</label>
+                                </div>
+                                <div class="form-check checked-success d-flex align-items-center gap-2">
+                                    <input class="form-check-input" type="checkbox" name="menu_permission[]" value="device_condition" id="device_condition" <?php echo (in_array('device_condition', $menuPermissions) ? 'checked' : ''); ?>>
+                                    <label class="form-check-label" for="device_condition">Device Condition</label>
+                                </div>
+                                <div class="form-check checked-success d-flex align-items-center gap-2">
+                                    <input class="form-check-input" type="checkbox" name="menu_permission[]" value="interface_state" id="interface_state" <?php echo (in_array('interface_state', $menuPermissions) ? 'checked' : ''); ?>>
+                                    <label class="form-check-label" for="interface_state">ONU Interface State</label>
+                                </div>
+                                <div class="form-check checked-success d-flex align-items-center gap-2">
+                                    <input class="form-check-input" type="checkbox" name="menu_permission[]" value="device_info" id="device_info" <?php echo (in_array('device_info', $menuPermissions) ? 'checked' : ''); ?>>
+                                    <label class="form-check-label" for="device_info">Device Info</label>
+                                </div>
+                                <div class="form-check checked-success d-flex align-items-center gap-2">
+                                    <input class="form-check-input" type="checkbox" name="menu_permission[]" value="olt_diagram" id="olt_diagram" <?php echo (in_array('olt_diagram', $menuPermissions) ? 'checked' : ''); ?>>
+                                    <label class="form-check-label" for="olt_diagram">Diagram</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
                                 <label class="font-weight-bold">Others</label>
                                 <div class="form-check checked-success d-flex align-items-center gap-2">
                                     <input class="form-check-input" type="checkbox" name="menu_permission[]" value="package_view" id="package_view" <?php echo (in_array('package_view', $menuPermissions) ? 'checked' : ''); ?>>

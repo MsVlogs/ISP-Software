@@ -77,7 +77,21 @@ if (isset($_POST['action']) && $_POST['action'] == 'delete') {
     }
 }
 
-// Handle Status Toggle
+// Handle explicit Active / Inactive actions
+if (isset($_GET['status_id'], $_GET['status'])) {
+    $oltId = (int) $_GET['status_id'];
+    $newStatus = $_GET['status'] === 'active' ? 1 : 0;
+    $olt = $obj->view_by_id('tbl_olt_devices', $oltId);
+    if ($olt && $obj->update('tbl_olt_devices', ['status' => $newStatus], "olt_id = $oltId")) {
+        $obj->notificationStore('OLT status updated successfully', 'success');
+    } else {
+        $obj->notificationStore('Failed to update OLT status', 'error');
+    }
+    echo '<script>window.location="?page=olt_management";</script>';
+    exit;
+}
+
+// Handle legacy Status Toggle
 if (isset($_GET['toggle_id'])) {
     $oltId = $_GET['toggle_id'];
     $olt = $obj->view_by_id('tbl_olt_devices', $oltId);
@@ -123,18 +137,21 @@ if (isset($_GET['toggle_id'])) {
                                     <td><?php echo htmlspecialchars($olt['community']); ?></td>
                                     <td><?php echo htmlspecialchars($olt['description'] ?? '-'); ?></td>
                                     <td>
-                                        <a href="?page=olt_management&toggle_id=<?php echo $olt['olt_id']; ?>" 
-                                           class="badge <?php echo $olt['status'] == 1 ? 'bg-success' : 'bg-danger'; ?>">
+                                        <span class="badge <?php echo $olt['status'] == 1 ? 'bg-success' : 'bg-danger'; ?>">
                                             <?php echo $olt['status'] == 1 ? 'Active' : 'Inactive'; ?>
-                                        </a>
+                                        </span>
                                     </td>
                                     <td>
                                         <button type="button" class="btn btn-sm btn-warning" 
-                                                onclick="editOlt(<?php echo htmlspecialchars(json_encode($olt)); ?>)">
+                                                onclick="editOlt(<?php echo htmlspecialchars(json_encode($olt)); ?>)" title="Edit">
                                             <i class="ri-edit-line"></i>
                                         </button>
+                                        <a href="?page=olt_management&status_id=<?php echo $olt['olt_id']; ?>&status=active"
+                                           class="btn btn-sm btn-success <?php echo $olt['status'] == 1 ? 'disabled' : ''; ?>" title="Active">Active</a>
+                                        <a href="?page=olt_management&status_id=<?php echo $olt['olt_id']; ?>&status=inactive"
+                                           class="btn btn-sm btn-secondary <?php echo $olt['status'] == 0 ? 'disabled' : ''; ?>" title="Inactive">Inactive</a>
                                         <button type="button" class="btn btn-sm btn-danger" 
-                                                onclick="deleteOlt(<?php echo $olt['olt_id']; ?>)">
+                                                onclick="deleteOlt(<?php echo $olt['olt_id']; ?>)" title="Delete">
                                             <i class="ri-delete-bin-line"></i>
                                         </button>
                                     </td>

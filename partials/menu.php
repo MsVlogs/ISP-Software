@@ -168,6 +168,13 @@
                         <span>OLT</span>
                     </a>
                     <ul class="sidebar-submenu">
+                        <?php if ($obj->userMenuePermission('olt_management')) { ?>
+                            <li>
+                                <a href="?page=olt_management"><i class="ri-circle-fill circle-icon text-success-main w-auto"></i>OLT Management</a>
+                            </li>
+                        <?php } ?>
+                    </ul>
+                    <ul class="sidebar-submenu">
                         <?php if ($obj->userMenuePermission('device_info')) { ?>
                             <li>
                                 <a href="?page=device_info"><i class="ri-circle-fill circle-icon text-primary-600 w-auto"></i>Device Info</a>

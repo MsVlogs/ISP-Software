@@ -45,6 +45,8 @@ if ($page == 'dashboard') {
     ($obj->userMenuePermission('mikrotik_all_secret')) ? include 'pages/mikrotik/all_secret_list.php' : include $homepage;
 } elseif ($page == 'mikrotik_unmatching_secret') {
     ($obj->userMenuePermission('mikrotik_unmatching_secret')) ? include 'pages/mikrotik/unmatching_secret.php' : include $homepage;
+}elseif ($page == 'olt_management') {
+    ($obj->userMenuePermission('olt_management')) ? include 'pages/olt/olt_management.php' : include $homepage;
 }elseif ($page == 'device_condition') {
     ($obj->userMenuePermission('device_condition')) ? include 'pages/olt/device_condition.php' : include $homepage;
 }elseif ($page == 'device_info') {
