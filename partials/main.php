@@ -29,7 +29,15 @@ $userImage = isset($_SESSION['userimage']) ? $_SESSION['userimage'] : NULL;
 $ty = isset($_SESSION['usertype']) ? $_SESSION['usertype'] : NULL;
 
 require(realpath(__DIR__ . '/../services/Model.php'));
-$obj = new Model();
+
+try {
+    $obj = new Model();
+} catch (Throwable $e) {
+    error_log("Application database initialization failed: " . $e->getMessage());
+    http_response_code(503);
+    echo '<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Service unavailable</title></head><body><h1>Service temporarily unavailable</h1><p>We could not connect to the application database. Please try again later.</p></body></html>';
+    exit();
+}
 
 if (($page == 'logout') && $login) {
     session_unset();
@@ -58,4 +66,3 @@ if (!$login) {
 } else {
 
     if ($page == 'login') header('Location: ?page=dashboard');
-}
