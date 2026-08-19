@@ -208,6 +208,18 @@
                     </ul>
                 </li>
 
+            <?php if ($obj->userMenuePermission('device_condition')) { ?>
+                <li class="dropdown">
+                    <a href="javascript:void(0)"><i class="mdi mdi-lan-connect menu-icon"></i><span>Network Monitoring</span></a>
+                    <ul class="sidebar-submenu">
+                        <li><a href="?page=network_monitoring&view=map"><i class="ri-circle-fill circle-icon text-primary-600 w-auto"></i>Network Map</a></li>
+                        <li><a href="?page=network_monitoring&view=traffic"><i class="ri-circle-fill circle-icon text-info-main w-auto"></i>Traffic Monitor</a></li>
+                        <li><a href="?page=network_monitoring&view=usage"><i class="ri-circle-fill circle-icon text-warning-main w-auto"></i>High Usage Monitor</a></li>
+                        <li><a href="?page=network_monitoring&view=devices"><i class="ri-circle-fill circle-icon text-success-main w-auto"></i>Device Watcher</a></li>
+                        <li><a href="?page=network_monitoring&view=alerts"><i class="ri-circle-fill circle-icon text-danger-main w-auto"></i>Logs & Alerts</a></li>
+                    </ul>
+                </li>
+            <?php } ?>
             <?php if ($obj->userMenuePermission('view_all_income') || $obj->userMenuePermission('connection_charge')) { ?>
                 <li class="dropdown">
                     <a href="javascript:void(0)">

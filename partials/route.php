@@ -55,6 +55,9 @@ if ($page == 'dashboard') {
     ($obj->userMenuePermission('interface_state')) ? include 'pages/olt/interface_state.php' : include $homepage;
 }elseif ($page == 'olt_diagram') {
     ($obj->userMenuePermission('olt_diagram')) ? include 'pages/olt/olt_diagram.php' : include $homepage;
+}elseif ($page == 'network_monitoring') {
+    ($obj->userMenuePermission('device_condition')) ? include 'pages/network/network_monitoring.php' : include $homepage;
+
 }elseif ($page == 'fetch_onu_data') {
     ($obj->userMenuePermission('fetch_onu_data')) ? include 'pages/olt/fetch_onu_data.php' : include $homepage;
 }elseif ($page == 'fetch_interface_data') {
