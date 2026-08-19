@@ -2,7 +2,10 @@
 set_time_limit(0);
 date_default_timezone_set('Asia/Dhaka');
 
-require_once __DIR__ . '/../../services/Database.php';
+require_once __DIR__ . '/../../services/OltService.php';
+
+$currentOlt = oltGetSelectedDevice();
+if (!$currentOlt) { echo "ERROR: No active OLT is configured." . PHP_EOL; exit(1); }
 
 $db = new Database();
 $pdo = $db->getConnection();
