@@ -1,9 +1,16 @@
 <?php
 set_time_limit(0);
+require_once __DIR__ . '/../../services/OltService.php';
+
+$currentOlt = oltGetSelectedDevice();
+if (!$currentOlt) {
+    echo '<div class="alert alert-warning">No active OLT configured. Please configure an OLT first.</div>';
+    return;
+}
 
 // === OLT credentials & OIDs ===
-$oltIp = "103.103.33.114:161";
-$community = "BDCOM-OLT-1";
+$oltIp = oltSnmpTarget($currentOlt);
+$community = $currentOlt['read_community'];
 $oids = [
     'descr'       => "1.3.6.1.2.1.2.2.1.2",
     'oper_status' => "1.3.6.1.2.1.2.2.1.8"

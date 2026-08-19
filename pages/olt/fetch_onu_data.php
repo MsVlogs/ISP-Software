@@ -14,8 +14,8 @@ function logMessage($msg){
 }
 
 // OLT credentials
-$oltIp = "103.103.33.114:161";
-$community = "BDCOM-OLT-1";
+$oltIp = oltSnmpTarget($currentOlt);
+$community = $currentOlt['read_community'];
 
 // OIDs for device condition monitoring
 $oids = [

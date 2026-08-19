@@ -2,20 +2,27 @@
 set_time_limit(30);
 date_default_timezone_set('Asia/Dhaka');
 
-require_once __DIR__ . '/../../services/Database.php';
-$db = new Database();
-$pdo = $db->getConnection();
+require_once __DIR__ . '/../../services/OltService.php';
 
-$stmt = $pdo->query("
-    SELECT olt_ip, interface_name, serial, distance, tx_power, rx_power,
-           download_bytes, upload_bytes, last_updated
-    FROM onu_status
-    ORDER BY
-        CAST(SUBSTRING_INDEX(SUBSTRING_INDEX(interface_name,'/',1),'EPON',-1) AS UNSIGNED),
-        CAST(SUBSTRING_INDEX(SUBSTRING_INDEX(interface_name,':',1),'/',-1) AS UNSIGNED),
-        CAST(SUBSTRING_INDEX(interface_name,':',-1) AS UNSIGNED)
-");
-$onuPorts = $stmt->fetchAll(PDO::FETCH_ASSOC);
+$oltDevices = oltGetActiveDevices();
+$currentOlt = oltGetSelectedDevice();
+$pdo = oltDb();
+$onuPorts = [];
+
+if ($pdo && $currentOlt) {
+    $stmt = $pdo->prepare("
+        SELECT olt_ip, interface_name, serial, distance, tx_power, rx_power,
+               download_bytes, upload_bytes, last_updated
+        FROM onu_status
+        WHERE olt_ip = :olt_ip
+        ORDER BY
+            CAST(SUBSTRING_INDEX(SUBSTRING_INDEX(interface_name,'/',1),'EPON',-1) AS UNSIGNED),
+            CAST(SUBSTRING_INDEX(SUBSTRING_INDEX(interface_name,':',1),'/',-1) AS UNSIGNED),
+            CAST(SUBSTRING_INDEX(interface_name,':',-1) AS UNSIGNED)
+    ");
+    $stmt->execute(['olt_ip' => $currentOlt['ip_address']]);
+    $onuPorts = $stmt->fetchAll(PDO::FETCH_ASSOC);
+}
 
 function formatBytes($bytes) {
     if ($bytes === null || $bytes <= 0) return '-';
@@ -35,7 +42,18 @@ function powerClass($power) {
 <!-- HTML Output -->
 <div class="container py-4">
     <div class="d-flex justify-content-between align-items-center mb-3">
-        <span class="badge bg-info text-dark me-3">Total ONUs: <?= count($onuPorts) ?></span>
+        <div class="d-flex align-items-center gap-2">
+            <select id="oltSelector" class="form-select form-select-sm" style="min-width:280px" onchange="changeOlt(this.value)">
+                <?php if (!$oltDevices): ?>
+                    <option value="">No active OLT configured</option>
+                <?php else: ?>
+                    <?php foreach ($oltDevices as $olt): ?>
+                        <option value="<?= (int)$olt['id'] ?>" <?= $currentOlt && (int)$currentOlt['id'] === (int)$olt['id'] ? 'selected' : '' ?>><?= htmlspecialchars($olt['device_name'] . ' (' . $olt['ip_address'] . ')') ?></option>
+                    <?php endforeach; ?>
+                <?php endif; ?>
+            </select>
+            <span class="badge bg-info text-dark">Total ONUs: <?= count($onuPorts) ?></span>
+        </div>
         <button onclick="location.reload()" class="btn btn-sm btn-outline-primary">🔄 Refresh</button>
     </div>
 
@@ -75,3 +93,13 @@ function powerClass($power) {
         </table>
     </div>
 </div>
+
+<script>
+function changeOlt(oltId) {
+    if (!oltId) return;
+    fetch('pages/olt/set_selected_olt.php?olt_id=' + encodeURIComponent(oltId))
+        .then(r => r.json())
+        .then(data => { if (data.success) location.reload(); else alert(data.message || 'Unable to select OLT'); })
+        .catch(() => alert('Unable to select OLT'));
+}
+</script>

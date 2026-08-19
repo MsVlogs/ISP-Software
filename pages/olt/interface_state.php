@@ -1,8 +1,15 @@
 <?php
 set_time_limit(300);
+require_once __DIR__ . '/../../services/OltService.php';
 
-$oltIp = "103.103.33.114:161";
-$community = "BDCOM-OLT-1";
+$currentOlt = oltGetSelectedDevice();
+if (!$currentOlt) {
+    echo '<div class="alert alert-warning">No active OLT configured. Please configure an OLT first.</div>';
+    return;
+}
+
+$oltIp = oltSnmpTarget($currentOlt);
+$community = $currentOlt['read_community'];
 
 // Standard IF-MIB OIDs
 $oidIfDescr      = "1.3.6.1.2.1.2.2.1.2";
