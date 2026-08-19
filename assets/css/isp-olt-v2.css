@@ -1,0 +1,13 @@
+/* ISP-Software OLT Management v2 */
+.olt-v2-page{padding-bottom:32px}.olt-v2-page .olt-hero{background:linear-gradient(135deg,#0f172a,#1e3a8a);color:#fff;border-radius:18px;padding:22px;box-shadow:0 14px 36px rgba(15,23,42,.14)}
+.olt-v2-page .olt-hero h4{margin:0 0 6px;font-weight:750}.olt-v2-page .olt-hero p{margin:0;color:rgba(255,255,255,.72)}
+.olt-v2-page .olt-stat{background:#fff;border:1px solid #e2e8f0;border-radius:14px;padding:16px;box-shadow:0 8px 24px rgba(15,23,42,.05)}
+.olt-v2-page .olt-stat-label{font-size:.78rem;color:#64748b}.olt-v2-page .olt-stat-value{font-size:1.45rem;font-weight:750;margin-top:4px}
+.olt-v2-page .olt-table{background:#fff;border:1px solid #e2e8f0;border-radius:16px;overflow:hidden;box-shadow:0 8px 28px rgba(15,23,42,.05)}
+.olt-v2-page .olt-table thead th{background:#f8fafc;color:#475569;font-size:.76rem;text-transform:uppercase;letter-spacing:.04em;border-bottom:1px solid #e2e8f0;padding:13px 14px}.olt-v2-page .olt-table tbody td{padding:13px 14px;vertical-align:middle}
+.olt-v2-page .olt-device-name{font-weight:700;color:#0f172a}.olt-v2-page .olt-endpoint{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:.82rem;color:#475569}
+.olt-v2-page .olt-status{display:inline-flex;align-items:center;gap:6px;border-radius:999px;padding:5px 9px;font-size:.73rem;font-weight:700}.olt-v2-page .olt-status.active{background:#ecfdf3;color:#15803d}.olt-v2-page .olt-status.inactive{background:#fef2f2;color:#b91c1c}
+.olt-v2-page .olt-actions{display:flex;flex-wrap:wrap;gap:5px}.olt-v2-page .olt-actions .btn{border-radius:8px}
+[data-theme=dark] .olt-v2-page .olt-stat,[data-theme=dark] .olt-v2-page .olt-table{background:#121b2b;border-color:rgba(255,255,255,.08)}
+[data-theme=dark] .olt-v2-page .olt-table thead th{background:#182338;color:#cbd5e1;border-color:rgba(255,255,255,.08)}[data-theme=dark] .olt-v2-page .olt-device-name{color:#f8fafc}[data-theme=dark] .olt-v2-page .olt-endpoint{color:#94a3b8}
+@media(max-width:767.98px){.olt-v2-page .olt-hero{padding:18px}.olt-v2-page .olt-table{border-radius:12px}.olt-v2-page .olt-actions{min-width:150px}}
