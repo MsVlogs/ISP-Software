@@ -18,6 +18,7 @@ function logMessage($msg){
 
 // OLT credentials
 $oltIp = oltSnmpTarget($currentOlt);
+$dbOltIp = $currentOlt['ip_address'];
 $community = $currentOlt['read_community'];
 
 // OIDs for device condition monitoring
@@ -157,7 +158,7 @@ try {
     foreach($onuPorts as $onu){
         try {
             $checkStmt = $pdo->prepare("SELECT id FROM onu_status WHERE olt_ip = ? AND interface_name = ?");
-            $checkStmt->execute([$oltIp, $onu['name']]);
+            $checkStmt->execute([$dbOltIp, $onu['name']]);
             
             if($checkStmt->fetch()){
                 $stmt = $pdo->prepare("
@@ -173,7 +174,7 @@ try {
                     $onu['rx_power'] ?? null,
                     $onu['download_bytes'] ?? null,
                     $onu['upload_bytes'] ?? null,
-                    $oltIp,
+                    $dbOltIp,
                     $onu['name']
                 ]);
                 $updated++;
@@ -183,7 +184,7 @@ try {
                     VALUES (?, ?, ?, ?, ?, ?, ?, ?)
                 ");
                 $stmt->execute([
-                    $oltIp,
+                    $dbOltIp,
                     $onu['name'],
                     $onu['serial'] ?? null,
                     $onu['distance'] ?? null,
