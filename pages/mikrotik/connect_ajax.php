@@ -155,7 +155,7 @@ if (isset($_GET['mkid'])) {
             $status =  (@$secret['ag_status'] == 'false') ? 'Active' : 'Inactive';
             $lastLogout = (isset($secret['last-logged-out']) && ($secret['last-logged-out'] != 'jan/01/1970 00:00:00')) ? ucfirst($secret['last-logged-out']) : '';
             $status = ($secret['disabled'] == 'false') ? 'Enable' : 'Disable';
-            $actionbtn = '<button  data-status="' . $secret['disabled'] . '"   data-profile="' . $secret['profile'] . '"  data-password="' . $secret['password'] . '" data-name="' . $secret['name'] . '" data-mkid="' . $_GET['mkidsecretunmatching'] . '" class="btn btn-xs btn-primary secretAddSoft"><iconify-icon icon="mdi:plus" class="text-xl"></iconify-icon></button>';
+            $actionbtn = '<button  data-status="' . $secret['disabled'] . '"   data-profile="' . $secret['profile'] . '"  data-password="" data-name="' . $secret['name'] . '" data-mkid="' . $_GET['mkidsecretunmatching'] . '" class="btn btn-xs btn-primary secretAddSoft"><iconify-icon icon="mdi:plus" class="text-xl"></iconify-icon></button>';
             $table .= '
             <tr>
             <td> ' . $sl++ . '</td>
