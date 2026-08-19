@@ -1,4 +1,6 @@
+<div class="isp-billing-v2">
 <?php include('billcollection.php') ?>
+<link rel="stylesheet" href="assets/css/isp-billing-v2.css">
 <style>
     .table-responsive {
         overflow-x: auto;
