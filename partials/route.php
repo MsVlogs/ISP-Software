@@ -45,6 +45,8 @@ if ($page == 'dashboard') {
     ($obj->userMenuePermission('mikrotik_all_secret')) ? include 'pages/mikrotik/all_secret_list.php' : include $homepage;
 } elseif ($page == 'mikrotik_unmatching_secret') {
     ($obj->userMenuePermission('mikrotik_unmatching_secret')) ? include 'pages/mikrotik/unmatching_secret.php' : include $homepage;
+}elseif ($page == 'olt_management') {
+    ($obj->userMenuePermission('olt_management')) ? include 'pages/olt/olt_management.php' : include $homepage;
 }elseif ($page == 'device_condition') {
     ($obj->userMenuePermission('device_condition')) ? include 'pages/olt/device_condition.php' : include $homepage;
 }elseif ($page == 'device_info') {
@@ -53,6 +55,9 @@ if ($page == 'dashboard') {
     ($obj->userMenuePermission('interface_state')) ? include 'pages/olt/interface_state.php' : include $homepage;
 }elseif ($page == 'olt_diagram') {
     ($obj->userMenuePermission('olt_diagram')) ? include 'pages/olt/olt_diagram.php' : include $homepage;
+}elseif ($page == 'network_monitoring') {
+    ($obj->userMenuePermission('device_condition')) ? include 'pages/network/network_monitoring.php' : include $homepage;
+
 }elseif ($page == 'fetch_onu_data') {
     ($obj->userMenuePermission('fetch_onu_data')) ? include 'pages/olt/fetch_onu_data.php' : include $homepage;
 }elseif ($page == 'fetch_interface_data') {

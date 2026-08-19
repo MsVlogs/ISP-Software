@@ -1,3 +1,5 @@
+<link rel="stylesheet" href="assets/css/isp-mikrotik-v2.css">
+<div class="isp-mikrotik-v2">
 <div class="col-md-12">
     <div class="card">
         <div class="card-body">
@@ -53,9 +55,10 @@
         </div>
     </div>
 </div>
-<div class="card basic-data-table">
-    <div class="card-header d-flex flex-wrap align-items-center justify-content-between">
-        <h5 class="card-title mb-0">Mikrotik List</h5>
+<div class="card basic-data-table mikrotik-v2-panel">
+    <div class="card-header mikrotik-v2-header">
+        <div><h5 class="card-title mb-1">MikroTik Servers</h5><small class="text-secondary">Manage router access, availability and live connectivity</small></div>
+        <div class="mikrotik-v2-toolbar"><select id="mikrotikStatusFilter" class="form-select form-select-sm"><option value="">All Status</option><option value="^Enable$">Active</option><option value="^Disabled$">Inactive</option></select><input id="mikrotikSearch" class="form-control form-control-sm" placeholder="Search MikroTik..." /></div>
     </div>
     <div class="card-body">
         <table
@@ -119,6 +122,7 @@
 </div>
 
 
+</div>
 <?php $obj->start_script(); ?>
 <script>
     $(document).ready(function() {
@@ -148,7 +152,7 @@
         $('#mikrotikTable').DataTable({
             "ajax": "./pages/mikrotik/mikrotik.php",
             "processing": true,
-            "serverSide": true,
+            "serverSide": false,
             "responsive": true,
             "paging": true, // Enable pagination
             "searching": true, // Enable searching
@@ -162,7 +166,8 @@
                     "data": "mik_username"
                 },
                 {
-                    "data": "mik_password"
+                    "data": "mik_password",
+                    "render": function(data) { return `<span class="mik-password" data-password="${String(data).replace(/"/g, '&quot;')}">••••••••</span> <button type="button" class="btn btn-link btn-sm p-0 mik-password-toggle" title="Show password"><iconify-icon icon="lucide:eye"></iconify-icon></button>`; }
                 },
                 {
                     "data": "mik_ip"
@@ -173,7 +178,7 @@
                 {
                     "data": "status",
                     "render": function(data, type, row) {
-                        return data ? "Enabled" : "Disabled";
+                        return data === "Enable" ? `<span class="mik-status active"><span></span>Active</span>` : `<span class="mik-status inactive"><span></span>Inactive</span>`;
                     }
                 },
                 {
@@ -188,31 +193,37 @@
                 },
                 {
                     "data": null,
-                    "orderable": false, // Disable ordering for this column
+                    "orderable": false,
+                    "searchable": false,
                     "render": function(data, type, row) {
-                        if (row.status === "Disabled") {
-                            return `
-                        <a href="javascript:void(0)"class="w-32-px h-32-px bg-success-focus text-success-main rounded-circle d-inline-flex align-items-center justify-content-center edit-btn" data-id="${row.id}">
-                        <iconify-icon icon="lucide:edit"></iconify-icon></a>
-                        <a href="javascript:void(0)"class="w-32-px h-32-px bg-warning-focus text-warning-main rounded-circle d-inline-flex align-items-center justify-content-center restore-btn" data-id="${row.id}">
-                         <iconify-icon icon="mdi:toggle-switch"></iconify-icon></a>
-                        `;
-                        } else {
-                            return `
-                        <a href="javascript:void(0)"class="w-32-px h-32-px bg-success-focus text-success-main rounded-circle d-inline-flex align-items-center justify-content-center edit-btn" data-id="${row.id}">
-                        <iconify-icon icon="lucide:edit"></iconify-icon></a>
-                        <a href="javascript:void(0)"class="w-32-px h-32-px bg-danger-focus text-danger-main rounded-circle d-inline-flex align-items-center justify-content-center delete-btn" data-id="${row.id}">
-                        <iconify-icon icon="mdi:cancel"></iconify-icon></a>
-                        `;
-                        }
+                        const inactive = row.status === "Disabled";
+                        const toggleIcon = inactive ? "mdi:play-circle-outline" : "mdi:pause-circle-outline";
+                        const toggleClass = inactive ? "mik-action-enable" : "mik-action-disable";
+                        const toggleTitle = inactive ? "Activate" : "Deactivate";
+                        return `<div class="mik-actions">
+                            <button type="button" class="mik-action mik-action-edit edit-btn" data-id="${row.id}" title="Edit"><iconify-icon icon="lucide:edit"></iconify-icon></button>
+                            <button type="button" class="mik-action ${toggleClass} mik-toggle-btn" data-id="${row.id}" data-active="${inactive ? 0 : 1}" title="${toggleTitle}"><iconify-icon icon="${toggleIcon}"></iconify-icon></button>
+                            <button type="button" class="mik-action mik-action-delete delete-btn" data-id="${row.id}" title="Delete"><iconify-icon icon="mdi:trash-can-outline"></iconify-icon></button>
+                        </div>`;
                     }
-                }
+                },
             ],
             "responsive": true,
-            "paging": false,
-            "searching": false,
-            "ordering": false,
-            "info": false
+            "paging": true,
+            "searching": true,
+            "ordering": true,
+            "info": true
+        });
+
+        const mikTable = $('#mikrotikTable').DataTable();
+        $('#mikrotikSearch').on('input', function() { mikTable.search(this.value).draw(); });
+        $('#mikrotikStatusFilter').on('change', function() { mikTable.column(5).search(this.value, true, false).draw(); });
+
+        $(document).on('click', '.mik-password-toggle', function() {
+            const el = $(this).prev('.mik-password');
+            const shown = el.hasClass('revealed');
+            el.text(shown ? '••••••••' : el.data('password')).toggleClass('revealed', !shown);
+            $(this).attr('title', shown ? 'Show password' : 'Hide password');
         });
 
         // Call the connection check function for each row after table draw
@@ -328,64 +339,29 @@
                 });
             }
         });
-        $(document).on('click', '.restore-btn', function() {
-            var id = $(this).data('id'); // Get the id from data-id attribute
-
-            $.ajax({
-                type: "POST",
-                url: "./pages/mikrotik/connect_ajax.php",
-                data: {
-                    'mkid': id
-                },
-                dataType: "JSON",
-                success: function(response) {
-                    Swal.fire(
-                        'Updated!',
-                        'Your Mikrotik has been updated.',
-                        'success'
-                    );
-                    mkConnectCheck(id); // Call mkConnectCheck with the ID
-                    $('#mikrotikTable').DataTable().ajax.reload();
-                },
-                error: function(xhr, status, error) {
-                    Swal.fire(
-                        'Error!',
-                        'Something went wrong. Please try again later.',
-                        'error'
-                    );
-                }
+        $(document).on('click', '.mik-toggle-btn', function() {
+            const id = $(this).data('id');
+            const active = Number($(this).data('active')) ? 0 : 1;
+            const label = active ? 'activate' : 'deactivate';
+            Swal.fire({title: `Confirm ${label}`, text: `Are you sure you want to ${label} this MikroTik?`, icon: 'question', showCancelButton: true, confirmButtonText: 'Yes'}).then(function(result) {
+                if (!result.isConfirmed) return;
+                $.ajax({type:'POST',url:'./pages/mikrotik/toggle_mikrotik.php',data:{id:id,status:active},dataType:'JSON',success:function(response){
+                    Swal.fire(response.success ? 'Updated!' : 'Error', response.status, response.success ? 'success' : 'error');
+                    if(response.success) $('#mikrotikTable').DataTable().ajax.reload(null,false);
+                },error:function(){ Swal.fire('Error','Unable to update MikroTik status.','error'); }});
             });
-
         });
+
         $(document).on('click', '.delete-btn', function() {
-            var id = $(this).data('id'); // Get the id from data-id attribute
-            $.ajax({
-                type: "POST",
-                url: "./pages/mikrotik/connect_update_ajax.php",
-                data: {
-                    'mikrotik_id': id
-                },
-                dataType: "JSON",
-                success: function(response) {
-                    Swal.fire(
-                        'Disconnected!',
-                        'Your Mikrotik has been disconnected.',
-                        'success'
-                    );
-                    mkConnectCheck(id); // Call mkConnectCheck with the ID
-                    $('#mikrotikTable').DataTable().ajax.reload();
-                },
-                error: function(xhr, status, error) {
-                    Swal.fire(
-                        'Error!',
-                        'Something went wrong. Please try again later.',
-                        'error'
-                    );
-                }
+            const id = $(this).data('id');
+            Swal.fire({title:'Delete MikroTik?',text:'This permanently removes the server record.',icon:'warning',showCancelButton:true,confirmButtonText:'Delete',confirmButtonColor:'#dc2626'}).then(function(result){
+                if(!result.isConfirmed) return;
+                $.ajax({type:'GET',url:'./pages/mikrotik/delete_mikrotik.php',data:{id:id},success:function(){
+                    Swal.fire('Deleted','MikroTik server deleted successfully.','success');
+                    $('#mikrotikTable').DataTable().ajax.reload(null,false);
+                },error:function(){Swal.fire('Error','Unable to delete MikroTik server.','error');}});
             });
-
         });
-
 
         $('#mikrotikTable').on('click', '.edit-btn', function() {
             var id = $(this).data('id');

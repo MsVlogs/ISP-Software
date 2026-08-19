@@ -1,9 +1,16 @@
 <?php
 require 'vendor/autoload.php'; // FreeDSx SNMP
+require_once __DIR__ . '/../../services/OltService.php';
+
+$currentOlt = oltGetSelectedDevice();
+if (!$currentOlt) {
+    echo '<div class="alert alert-warning">No active OLT configured. Please configure an OLT first.</div>';
+    return;
+}
 
 // $ip = '172.35.156.14';
-$ip = '103.103.33.114:161';
-$community = 'BDCOM-OLT-1';
+$ip = oltSnmpTarget($currentOlt);
+$community = $currentOlt['read_community'];
 
 $error = null;
 $device = [];

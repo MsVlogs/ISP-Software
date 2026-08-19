@@ -148,6 +148,10 @@
                             <div class="form-group">
                                 <label>OLT </label>
                                 <div class="form-check checked-success d-flex align-items-center gap-2">
+                                    <input class="form-check-input" type="checkbox" name="menu_permission[]" value="olt_management" id="olt_management">
+                                    <label class="form-check-label" for="olt_management">OLT Management (Add/Active/Inactive/Delete)</label>
+                                </div>
+                                <div class="form-check checked-success d-flex align-items-center gap-2">
                                     <input class="form-check-input" type="checkbox" name="menu_permission[]" value="device_condition" id="device_condition">
                                     <label class="form-check-label" for="device_condition">Device Condition</label>
                                 </div>

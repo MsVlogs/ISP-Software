@@ -2,7 +2,10 @@
 set_time_limit(0);
 date_default_timezone_set('Asia/Dhaka');
 
-require_once __DIR__ . '/../../services/Database.php';
+require_once __DIR__ . '/../../services/OltService.php';
+
+$currentOlt = oltGetSelectedDevice();
+if (!$currentOlt) { echo "ERROR: No active OLT is configured." . PHP_EOL; exit(1); }
 
 $db = new Database();
 $pdo = $db->getConnection();
@@ -14,8 +17,9 @@ function logMessage($msg){
 }
 
 // OLT credentials
-$oltIp = "172.35.156.14";
-$community = "bsd";
+$oltIp = oltSnmpTarget($currentOlt);
+$dbOltIp = $currentOlt['ip_address'];
+$community = $currentOlt['read_community'];
 
 // OIDs for device condition monitoring
 $oids = [
@@ -154,7 +158,7 @@ try {
     foreach($onuPorts as $onu){
         try {
             $checkStmt = $pdo->prepare("SELECT id FROM onu_status WHERE olt_ip = ? AND interface_name = ?");
-            $checkStmt->execute([$oltIp, $onu['name']]);
+            $checkStmt->execute([$dbOltIp, $onu['name']]);
             
             if($checkStmt->fetch()){
                 $stmt = $pdo->prepare("
@@ -170,7 +174,7 @@ try {
                     $onu['rx_power'] ?? null,
                     $onu['download_bytes'] ?? null,
                     $onu['upload_bytes'] ?? null,
-                    $oltIp,
+                    $dbOltIp,
                     $onu['name']
                 ]);
                 $updated++;
@@ -180,7 +184,7 @@ try {
                     VALUES (?, ?, ?, ?, ?, ?, ?, ?)
                 ");
                 $stmt->execute([
-                    $oltIp,
+                    $dbOltIp,
                     $onu['name'],
                     $onu['serial'] ?? null,
                     $onu['distance'] ?? null,
@@ -199,6 +203,10 @@ try {
     
     $pdo->commit();
     logMessage("SUCCESS: Inserted: $inserted, Updated: $updated, Errors: $errors");
+    // Remove legacy rows keyed by the SNMP target (IP:port). The canonical DB key is the plain OLT IP.
+    $cleanup = $pdo->prepare("DELETE FROM onu_status WHERE olt_ip = ?");
+    $cleanup->execute([$oltIp]);
+    if ($cleanup->rowCount() > 0) logMessage("Cleaned legacy SNMP-target ONU rows: " . $cleanup->rowCount());
     
 } catch(Exception $e) {
     $pdo->rollBack();

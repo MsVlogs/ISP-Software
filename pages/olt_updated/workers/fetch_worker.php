@@ -34,12 +34,12 @@ while(true){
         echo "[".date("Y-m-d H:i:s")."] User active. Running fetch scripts...\n";
 
         // Fetch ONU data
-        exec("php /var/www/html/olt6/pages/olt/fetch_onu_data.php", $output1, $ret1);
+        exec("php /var/www/isp-software/pages/olt/fetch_onu_data.php", $output1, $ret1);
         foreach($output1 as $line) echo $line . "\n";
         echo "[".date("Y-m-d H:i:s")."] fetch_onu_data.php exit code: $ret1\n";
 
         // Fetch Interface data
-        exec("php /var/www/html/olt6/pages/olt/fetch_interface_data.php", $output2, $ret2);
+        exec("php /var/www/isp-software/pages/olt/fetch_interface_data.php", $output2, $ret2);
         foreach($output2 as $line) echo $line . "\n";
         echo "[".date("Y-m-d H:i:s")."] fetch_interface_data.php exit code: $ret2\n";
 

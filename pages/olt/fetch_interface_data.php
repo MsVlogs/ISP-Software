@@ -14,8 +14,8 @@ function logMessage($msg){
 }
 
 // OLT credentials
-$oltIp = "172.35.156.14";
-$community = "bsd";
+$oltIp = oltSnmpTarget($currentOlt);
+$community = $currentOlt['read_community'];
 
 // OIDs for interface overview
 $oids = [

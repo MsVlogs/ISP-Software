@@ -1,106 +1,59 @@
 <?php
-set_time_limit(300);
+set_time_limit(30);
+date_default_timezone_set('Asia/Dhaka');
 
-// OLT credentials
-$oltIp = "103.103.33.114:161";
-$community = "BDCOM-OLT-1";
-// snmpbulkwalk -v2c -c bsd -Cr10 -t 4 -r 1 -Cc 103.103.33.114:161
+require_once __DIR__ . '/../../services/OltService.php';
 
-// OIDs for interface info, RX & TX power
-$oids = [
-    'name'           => "1.3.6.1.2.1.2.2.1.2",        // Interface name
-    'download_bytes' => "1.3.6.1.2.1.31.1.1.1.10",   // ifHCInOctets
-    'upload_bytes'   => "1.3.6.1.2.1.31.1.1.1.6",    // ifHCOutOctets
-    'rx_power'       => "1.3.6.1.4.1.37950.1.1.5.12.2.1.8.1.7", // RX power
-    'tx_power'       => "1.3.6.1.4.1.37950.1.1.5.12.2.1.8.1.6", // TX power
-];
-
-// Function to run snmpbulkwalk
-function snmpWalkLines($community, $oltIp, $oid) {
-    $cmd = "snmpbulkwalk -v2c -c $community $oltIp $oid";
-    $output = shell_exec($cmd);
-    return explode("\n", trim($output));
-}
-
-// Step 1: Fetch interface names
-$interfaces = [];
-$lines = snmpWalkLines($community, $oltIp, $oids['name']);
-foreach ($lines as $line) {
-    if (preg_match('/\.(\d+) = STRING: "?(.+?)"?$/', $line, $matches)) {
-        $interfaces[$matches[1]] = $matches[2]; // key = ifIndex
-    }
-}
-
-// Step 2: Fetch download bytes
-$downloads = [];
-$lines = snmpWalkLines($community, $oltIp, $oids['download_bytes']);
-foreach ($lines as $line) {
-    if (preg_match('/\.(\d+) = Counter64: (\d+)/', $line, $matches)) {
-        $downloads[$matches[1]] = (int)$matches[2];
-    }
-}
-
-// Step 3: Fetch upload bytes
-$uploads = [];
-$lines = snmpWalkLines($community, $oltIp, $oids['upload_bytes']);
-foreach ($lines as $line) {
-    if (preg_match('/\.(\d+) = Counter64: (\d+)/', $line, $matches)) {
-        $uploads[$matches[1]] = (int)$matches[2];
-    }
-}
-
-// Step 4: Fetch RX power
-$rxPowers = [];
-$lines = snmpWalkLines($community, $oltIp, $oids['rx_power']);
-foreach ($lines as $line) {
-    if (preg_match('/(\d+)\.(\d+) = STRING: "?(.+?)"?$/', $line, $matches)) {
-        $ponPort = $matches[1];
-        $onuNo   = $matches[2];
-        $rxPowers["$ponPort:$onuNo"] = $matches[3]; // e.g., "0.00 mW (-27.96 dBm)"
-    }
-}
-
-// Step 5: Fetch TX power
-$txPowers = [];
-$lines = snmpWalkLines($community, $oltIp, $oids['tx_power']);
-foreach ($lines as $line) {
-    if (preg_match('/(\d+)\.(\d+) = STRING: "?(.+?)"?$/', $line, $matches)) {
-        $ponPort = $matches[1];
-        $onuNo   = $matches[2];
-        $txPowers["$ponPort:$onuNo"] = $matches[3]; // e.g., "0.00 mW (-3.00 dBm)"
-    }
-}
-
-// Step 6: Combine data by matching EPONx/y:z → PON port / ONU
+$oltDevices = oltGetActiveDevices();
+$currentOlt = oltGetSelectedDevice();
+$pdo = oltDb();
 $onuPorts = [];
-foreach ($interfaces as $ifIndex => $name) {
-    if (preg_match('/^EPON\d+\/(\d+):(\d+)$/', $name, $m)) {
-        $ponPort = $m[1];
-        $onuNo   = $m[2];
-        $key     = "$ponPort:$onuNo";
 
-        $onuPorts[] = [
-            'name'           => $name,
-            'download_bytes' => $downloads[$ifIndex] ?? null,
-            'upload_bytes'   => $uploads[$ifIndex] ?? null,
-            'rx_power'       => $rxPowers[$key] ?? null,
-            'tx_power'       => $txPowers[$key] ?? null,
-        ];
-    }
+if ($pdo && $currentOlt) {
+    $stmt = $pdo->prepare("
+        SELECT olt_ip, interface_name, serial, distance, tx_power, rx_power,
+               download_bytes, upload_bytes, last_updated
+        FROM onu_status
+        WHERE olt_ip = :olt_ip
+        ORDER BY
+            CAST(SUBSTRING_INDEX(SUBSTRING_INDEX(interface_name,'/',1),'EPON',-1) AS UNSIGNED),
+            CAST(SUBSTRING_INDEX(SUBSTRING_INDEX(interface_name,':',1),'/',-1) AS UNSIGNED),
+            CAST(SUBSTRING_INDEX(interface_name,':',-1) AS UNSIGNED)
+    ");
+    $stmt->execute(['olt_ip' => $currentOlt['ip_address']]);
+    $onuPorts = $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
 
-// Step 7: Sort EPON interfaces logically
-uasort($onuPorts, function ($a, $b) {
-    preg_match('/EPON(\d+)\/(\d+):(\d+)/', $a['name'], $m1);
-    preg_match('/EPON(\d+)\/(\d+):(\d+)/', $b['name'], $m2);
-    return [$m1[1], $m1[2], $m1[3]] <=> [$m2[1], $m2[2], $m2[3]];
-});
+function formatBytes($bytes) {
+    if ($bytes === null || $bytes <= 0) return '-';
+    return round($bytes / 1073741824, 2) . ' GB';
+}
+
+function powerClass($power) {
+    if ($power === null || $power === '') return 'text-muted';
+    $power = (float)$power;
+    if ($power >= -20) return 'text-success fw-bold';
+    if ($power >= -25) return 'text-info fw-bold';
+    if ($power >= -30) return 'text-warning fw-bold';
+    return 'text-danger fw-bold';
+}
 ?>
 
 <!-- HTML Output -->
 <div class="container py-4">
     <div class="d-flex justify-content-between align-items-center mb-3">
-        <span class="badge bg-info text-dark me-3">Total ONUs: <?= count($onuPorts) ?></span>
+        <div class="d-flex align-items-center gap-2">
+            <select id="oltSelector" class="form-select form-select-sm" style="min-width:280px" onchange="changeOlt(this.value)">
+                <?php if (!$oltDevices): ?>
+                    <option value="">No active OLT configured</option>
+                <?php else: ?>
+                    <?php foreach ($oltDevices as $olt): ?>
+                        <option value="<?= (int)$olt['id'] ?>" <?= $currentOlt && (int)$currentOlt['id'] === (int)$olt['id'] ? 'selected' : '' ?>><?= htmlspecialchars($olt['device_name'] . ' (' . $olt['ip_address'] . ')') ?></option>
+                    <?php endforeach; ?>
+                <?php endif; ?>
+            </select>
+            <span class="badge bg-info text-dark">Total ONUs: <?= count($onuPorts) ?></span>
+        </div>
         <button onclick="location.reload()" class="btn btn-sm btn-outline-primary">🔄 Refresh</button>
     </div>
 
@@ -121,7 +74,7 @@ uasort($onuPorts, function ($a, $b) {
                 <?php foreach ($onuPorts as $onu): ?>
                     <tr>
                         <td><?= $sl++ ?></td>
-                        <td><?= htmlspecialchars($onu['name'] ?? '-') ?></td>
+                        <td><?= htmlspecialchars($onu['interface_name'] ?? '-') ?></td>
                         <td>
                             <?= isset($onu['download_bytes']) 
                                 ? round($onu['download_bytes'] / 1073741824, 2) 
@@ -132,11 +85,21 @@ uasort($onuPorts, function ($a, $b) {
                                 ? round($onu['upload_bytes'] / 1073741824, 2) 
                                 : '-' ?>
                         </td>
-                        <td><?= htmlspecialchars($onu['rx_power'] ?? '-') ?></td>
-                        <td><?= htmlspecialchars($onu['tx_power'] ?? '-') ?></td>
+                        <td class="<?= powerClass($onu['rx_power']) ?>"><?= ($onu['rx_power'] !== null && $onu['rx_power'] !== '') ? htmlspecialchars($onu['rx_power']) . ' dBm' : '-' ?></td>
+                        <td class="<?= powerClass($onu['tx_power']) ?>"><?= ($onu['tx_power'] !== null && $onu['tx_power'] !== '') ? htmlspecialchars($onu['tx_power']) . ' dBm' : '-' ?></td>
                     </tr>
                 <?php endforeach; ?>
             </tbody>
         </table>
     </div>
 </div>
+
+<script>
+function changeOlt(oltId) {
+    if (!oltId) return;
+    fetch('pages/olt/set_selected_olt.php?olt_id=' + encodeURIComponent(oltId))
+        .then(r => r.json())
+        .then(data => { if (data.success) location.reload(); else alert(data.message || 'Unable to select OLT'); })
+        .catch(() => alert('Unable to select OLT'));
+}
+</script>

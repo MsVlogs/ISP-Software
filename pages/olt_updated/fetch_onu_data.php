@@ -17,8 +17,8 @@ function logMessage($msg){
 
 //$oltIp = "106.0.54.225:50501"; // Port Forwarded Public IP
 //$community = "bsd";
-$oltIp = "172.35.156.14";
-$community = "bsd";
+$oltIp = "103.103.33.114:161";
+$community = "BDCOM-OLT-1";
 
 // OIDs for device condition monitoring
 $oids = [

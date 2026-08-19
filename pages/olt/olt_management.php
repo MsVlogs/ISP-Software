@@ -14,16 +14,15 @@ if (isset($_POST['action']) && $_POST['action'] == 'add') {
 
     if ($oltName && $oltIp) {
         $data = [
-            'olt_name' => $oltName,
-            'olt_ip' => $oltIp,
-            'olt_port' => $oltPort,
-            'community' => $community,
-            'description' => $description,
+            'device_name' => $oltName,
+            'ip_address' => $oltIp,
+            'snmp_port' => (int) $oltPort,
+            'read_community' => $community,
             'status' => 1,
             'created_at' => date('Y-m-d H:i:s')
         ];
         
-        if ($obj->insert('tbl_olt_devices', $data)) {
+        if ($obj->insertData('tbl_olt_devices', $data)) {
             $obj->notificationStore('OLT Device Added Successfully', 'success');
             echo '<script>setTimeout(() => { location.reload(); }, 1000);</script>';
         } else {
@@ -36,7 +35,7 @@ if (isset($_POST['action']) && $_POST['action'] == 'add') {
 
 // Handle Edit OLT
 if (isset($_POST['action']) && $_POST['action'] == 'edit') {
-    $oltId = $_POST['olt_id'] ?? null;
+    $oltId = isset($_POST['olt_id']) ? (int) $_POST['olt_id'] : null;
     $oltName = trim($_POST['olt_name'] ?? '');
     $oltIp = trim($_POST['olt_ip'] ?? '');
     $oltPort = trim($_POST['olt_port'] ?? '161');
@@ -45,15 +44,14 @@ if (isset($_POST['action']) && $_POST['action'] == 'edit') {
 
     if ($oltId && $oltName && $oltIp) {
         $data = [
-            'olt_name' => $oltName,
-            'olt_ip' => $oltIp,
-            'olt_port' => $oltPort,
-            'community' => $community,
-            'description' => $description,
+            'device_name' => $oltName,
+            'ip_address' => $oltIp,
+            'snmp_port' => (int) $oltPort,
+            'read_community' => $community,
             'updated_at' => date('Y-m-d H:i:s')
         ];
         
-        if ($obj->update('tbl_olt_devices', $data, "olt_id = $oltId")) {
+        if ($obj->updateData('tbl_olt_devices', $data, ['id' => $oltId])) {
             $obj->notificationStore('OLT Device Updated Successfully', 'success');
             echo '<script>setTimeout(() => { location.reload(); }, 1000);</script>';
         } else {
@@ -66,9 +64,9 @@ if (isset($_POST['action']) && $_POST['action'] == 'edit') {
 
 // Handle Delete OLT
 if (isset($_POST['action']) && $_POST['action'] == 'delete') {
-    $oltId = $_POST['olt_id'] ?? null;
+    $oltId = isset($_POST['olt_id']) ? (int) $_POST['olt_id'] : null;
     if ($oltId) {
-        if ($obj->delete('tbl_olt_devices', "olt_id = $oltId")) {
+        if ($obj->singleDeleteData('tbl_olt_devices', "id = $oltId")) {
             $obj->notificationStore('OLT Device Deleted Successfully', 'success');
             echo '<script>setTimeout(() => { location.reload(); }, 1000);</script>';
         } else {
@@ -77,13 +75,27 @@ if (isset($_POST['action']) && $_POST['action'] == 'delete') {
     }
 }
 
-// Handle Status Toggle
+// Handle explicit Active / Inactive actions
+if (isset($_GET['status_id'], $_GET['status'])) {
+    $oltId = (int) $_GET['status_id'];
+    $newStatus = $_GET['status'] === 'active' ? 1 : 0;
+    $olt = $obj->details_by_cond('tbl_olt_devices', "id = $oltId");
+    if ($olt && $obj->updateData('tbl_olt_devices', ['status' => $newStatus], ['id' => $oltId])) {
+        $obj->notificationStore('OLT status updated successfully', 'success');
+    } else {
+        $obj->notificationStore('Failed to update OLT status', 'error');
+    }
+    echo '<script>window.location="?page=olt_management";</script>';
+    exit;
+}
+
+// Handle legacy Status Toggle
 if (isset($_GET['toggle_id'])) {
-    $oltId = $_GET['toggle_id'];
-    $olt = $obj->view_by_id('tbl_olt_devices', $oltId);
+    $oltId = (int) $_GET['toggle_id'];
+    $olt = $obj->details_by_cond('tbl_olt_devices', "id = $oltId");
     $newStatus = $olt['status'] == 1 ? 0 : 1;
     
-    if ($obj->update('tbl_olt_devices', ['status' => $newStatus], "olt_id = $oltId")) {
+    if ($obj->updateData('tbl_olt_devices', ['status' => $newStatus], ['id' => $oltId])) {
         $obj->notificationStore('OLT Status Updated', 'success');
         echo '<script>window.location="?page=olt_management";</script>';
     }
@@ -118,23 +130,26 @@ if (isset($_GET['toggle_id'])) {
                             <?php foreach ($oltDevices as $olt): ?>
                                 <tr>
                                     <td><?php echo $sl++; ?></td>
-                                    <td><strong><?php echo htmlspecialchars($olt['olt_name']); ?></strong></td>
-                                    <td><?php echo htmlspecialchars($olt['olt_ip']) . ':' . htmlspecialchars($olt['olt_port']); ?></td>
-                                    <td><?php echo htmlspecialchars($olt['community']); ?></td>
-                                    <td><?php echo htmlspecialchars($olt['description'] ?? '-'); ?></td>
+                                    <td><strong><?php echo htmlspecialchars($olt['device_name']); ?></strong></td>
+                                    <td><?php echo htmlspecialchars($olt['ip_address']) . ':' . htmlspecialchars($olt['snmp_port']); ?></td>
+                                    <td><?php echo htmlspecialchars($olt['read_community']); ?></td>
+                                    <td><?php echo htmlspecialchars('-'); ?></td>
                                     <td>
-                                        <a href="?page=olt_management&toggle_id=<?php echo $olt['olt_id']; ?>" 
-                                           class="badge <?php echo $olt['status'] == 1 ? 'bg-success' : 'bg-danger'; ?>">
+                                        <span class="badge <?php echo $olt['status'] == 1 ? 'bg-success' : 'bg-danger'; ?>">
                                             <?php echo $olt['status'] == 1 ? 'Active' : 'Inactive'; ?>
-                                        </a>
+                                        </span>
                                     </td>
                                     <td>
                                         <button type="button" class="btn btn-sm btn-warning" 
-                                                onclick="editOlt(<?php echo htmlspecialchars(json_encode($olt)); ?>)">
+                                                onclick="editOlt(<?php echo htmlspecialchars(json_encode($olt)); ?>)" title="Edit">
                                             <i class="ri-edit-line"></i>
                                         </button>
+                                        <a href="?page=olt_management&status_id=<?php echo $olt['id']; ?>&status=active"
+                                           class="btn btn-sm btn-success <?php echo $olt['status'] == 1 ? 'disabled' : ''; ?>" title="Active">Active</a>
+                                        <a href="?page=olt_management&status_id=<?php echo $olt['id']; ?>&status=inactive"
+                                           class="btn btn-sm btn-secondary <?php echo $olt['status'] == 0 ? 'disabled' : ''; ?>" title="Inactive">Inactive</a>
                                         <button type="button" class="btn btn-sm btn-danger" 
-                                                onclick="deleteOlt(<?php echo $olt['olt_id']; ?>)">
+                                                onclick="deleteOlt(<?php echo $olt['id']; ?>)" title="Delete">
                                             <i class="ri-delete-bin-line"></i>
                                         </button>
                                     </td>
@@ -175,7 +190,7 @@ if (isset($_GET['toggle_id'])) {
                             <div class="mb-3">
                                 <label class="form-label">OLT IP Address <span class="text-danger">*</span></label>
                                 <input type="text" class="form-control" name="olt_ip" id="olt_ip" 
-                                       placeholder="103.178.220.124" required>
+                                       placeholder="103.103.33.114" required>
                             </div>
                         </div>
                         <div class="col-md-4">
@@ -210,12 +225,12 @@ if (isset($_GET['toggle_id'])) {
 <script>
 function editOlt(olt) {
     document.getElementById('formAction').value = 'edit';
-    document.getElementById('olt_id').value = olt.olt_id;
-    document.getElementById('olt_name').value = olt.olt_name;
-    document.getElementById('olt_ip').value = olt.olt_ip;
-    document.getElementById('olt_port').value = olt.olt_port;
-    document.getElementById('community').value = olt.community;
-    document.getElementById('description').value = olt.description || '';
+    document.getElementById('olt_id').value = olt.id;
+    document.getElementById('olt_name').value = olt.device_name;
+    document.getElementById('olt_ip').value = olt.ip_address;
+    document.getElementById('olt_port').value = olt.snmp_port;
+    document.getElementById('community').value = olt.read_community;
+    document.getElementById('description').value = '';
     document.getElementById('modalTitle').textContent = 'Edit OLT Device';
     
     const modal = new bootstrap.Modal(document.getElementById('addOltModal'));

@@ -1,0 +1,163 @@
+/* ISP-Software UI v2: unique, compact ISP/NOC workspace shell. */
+:root {
+  --isp-v2-bg: #f4f7fb;
+  --isp-v2-surface: #ffffff;
+  --isp-v2-border: rgba(15, 23, 42, .08);
+  --isp-v2-text: #162033;
+  --isp-v2-muted: #667085;
+  --isp-v2-accent: #2563eb;
+  --isp-v2-accent-soft: rgba(37, 99, 235, .10);
+  --isp-v2-sidebar: #101828;
+  --isp-v2-sidebar-soft: #182338;
+}
+
+body {
+  background: var(--isp-v2-bg);
+  color: var(--isp-v2-text);
+}
+
+.dashboard-main {
+  transition: margin-inline-start .2s ease;
+}
+
+.navbar-header {
+  min-height: 72px;
+  background: rgba(255,255,255,.94);
+  border-bottom: 1px solid var(--isp-v2-border);
+  box-shadow: 0 4px 24px rgba(15,23,42,.04);
+  backdrop-filter: blur(12px);
+}
+
+.isp-sidebar-v2 {
+  background: linear-gradient(180deg, var(--isp-v2-sidebar) 0%, #0b1220 100%);
+  box-shadow: 8px 0 32px rgba(15,23,42,.12);
+}
+
+.isp-sidebar-v2 .sidebar-brand-area {
+  min-height: 72px;
+  display: flex;
+  align-items: center;
+  padding-inline: 20px;
+  border-bottom: 1px solid rgba(255,255,255,.07);
+}
+
+.isp-sidebar-v2 .sidebar-logo img {
+  max-height: 38px;
+  width: auto;
+}
+
+.isp-sidebar-v2 .sidebar-menu-area {
+  padding: 14px 12px 24px;
+}
+
+.isp-sidebar-language {
+  display: inline-flex;
+  gap: 4px;
+  padding: 4px;
+  margin: 0 4px 12px;
+  border: 1px solid rgba(255,255,255,.09);
+  border-radius: 10px;
+  background: rgba(255,255,255,.04);
+}
+
+.isp-sidebar-language a {
+  color: rgba(255,255,255,.68);
+  padding: 6px 10px;
+  border-radius: 7px;
+  font-size: 12px;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.isp-sidebar-language a.active,
+.isp-sidebar-language a:hover {
+  color: #fff;
+  background: var(--isp-v2-accent);
+}
+
+.isp-navigation-v2 > li > a {
+  min-height: 44px;
+  margin: 3px 0;
+  padding: 9px 12px;
+  border-radius: 10px;
+  color: rgba(255,255,255,.74);
+  font-weight: 600;
+  transition: .16s ease;
+}
+
+.isp-navigation-v2 > li > a:hover,
+.isp-navigation-v2 > li.active > a {
+  color: #fff;
+  background: linear-gradient(90deg, rgba(37,99,235,.95), rgba(59,130,246,.72));
+  box-shadow: 0 7px 18px rgba(37,99,235,.20);
+}
+
+.isp-navigation-v2 .menu-icon {
+  width: 24px;
+  margin-inline-end: 8px;
+  font-size: 18px;
+  opacity: .92;
+}
+
+.isp-navigation-v2 .sidebar-submenu {
+  margin: 3px 0 7px 18px;
+  padding: 4px 0 4px 10px;
+  border-inline-start: 1px solid rgba(255,255,255,.10);
+}
+
+.isp-navigation-v2 .sidebar-submenu a {
+  display: block;
+  padding: 8px 10px;
+  border-radius: 8px;
+  color: rgba(255,255,255,.58);
+  font-size: 13px;
+  text-decoration: none;
+}
+
+.isp-navigation-v2 .sidebar-submenu a:hover {
+  color: #fff;
+  background: rgba(255,255,255,.06);
+}
+
+.dashboard-main-body {
+  padding: 22px 24px 28px;
+}
+
+.dashboard-main-body .card,
+.dashboard-main-body .card-box,
+.dashboard-main-body .bg-base {
+  border: 1px solid var(--isp-v2-border);
+  border-radius: 14px;
+  box-shadow: 0 8px 30px rgba(15,23,42,.045);
+}
+
+.isp-v2-card {
+  background: var(--isp-v2-surface);
+  border: 1px solid var(--isp-v2-border);
+  border-radius: 14px;
+  box-shadow: 0 8px 30px rgba(15,23,42,.05);
+}
+
+[data-theme=dark] {
+  --isp-v2-bg: #0b1220;
+  --isp-v2-surface: #121b2b;
+  --isp-v2-border: rgba(255,255,255,.08);
+  --isp-v2-text: #f4f7fb;
+  --isp-v2-muted: #98a2b3;
+}
+
+[data-theme=dark] .navbar-header {
+  background: rgba(18,27,43,.94);
+}
+
+@media (max-width: 767.98px) {
+  .dashboard-main-body { padding: 16px 14px 24px; }
+  .navbar-header { min-height: 64px; }
+}
+
+[dir=rtl] .isp-navigation-v2 .sidebar-submenu {
+  margin-left: 0;
+  margin-right: 18px;
+  border-left: 0;
+  border-right: 1px solid rgba(255,255,255,.10);
+}

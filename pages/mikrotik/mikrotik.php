@@ -16,7 +16,7 @@ foreach ($allmikrotik as $item) {
         'mik_password' => $item['mik_password'] ?? 'N/A',
         'mik_ip' => $item['mik_ip'] ?? 'N/A',
         'mik_port' => $item['mik_port'] ?? 'N/A',
-        'status' => $item['status'] ? 'Enable' : 'Disabled'
+        'status' => !empty($item['status']) ? 'Enable' : 'Disabled'
     ];
 };
 echo json_encode([
