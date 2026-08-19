@@ -203,6 +203,10 @@ try {
     
     $pdo->commit();
     logMessage("SUCCESS: Inserted: $inserted, Updated: $updated, Errors: $errors");
+    // Remove legacy rows keyed by the SNMP target (IP:port). The canonical DB key is the plain OLT IP.
+    $cleanup = $pdo->prepare("DELETE FROM onu_status WHERE olt_ip = ?");
+    $cleanup->execute([$oltIp]);
+    if ($cleanup->rowCount() > 0) logMessage("Cleaned legacy SNMP-target ONU rows: " . $cleanup->rowCount());
     
 } catch(Exception $e) {
     $pdo->rollBack();
