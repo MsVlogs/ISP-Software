@@ -166,8 +166,8 @@
                     "data": "mik_username"
                 },
                 {
-                    "data": "mik_password",
-                    "render": function(data) { return `<span class="mik-password" data-password="${String(data).replace(/"/g, '&quot;')}">••••••••</span> <button type="button" class="btn btn-link btn-sm p-0 mik-password-toggle" title="Show password"><iconify-icon icon="lucide:eye"></iconify-icon></button>`; }
+                    "data": "mik_username",
+                    "render": function() { return '<span class="text-muted">••••••••</span>'; }
                 },
                 {
                     "data": "mik_ip"
