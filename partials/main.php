@@ -1,32 +1,34 @@
 <?php
-if (!isset($_SESSION["session"])) {
-    session_start();
-    $_SESSION["session"] = true;
-}
+require_once __DIR__ . '/../services/Security.php';
+Security::bootstrap();
 
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
+ini_set('display_errors', '0');
+ini_set('display_startup_errors', '0');
 error_reporting(E_ALL);
 
 date_default_timezone_set('Asia/Dhaka');
+
 if (!isset($_SESSION["login"]) && isset($_COOKIE["login"])) {
-    // Restore session from cookie
+    // Legacy cookie restoration retained for compatibility; authorization must still be enforced by the application.
     if ($_COOKIE["login"]) {
         $_SESSION["login"] = $_COOKIE["login"];
-        $_SESSION['userid'] = $_COOKIE['userid'];
-        $_SESSION['username'] = $_COOKIE['username'];
-        $_SESSION['usertype'] = $_COOKIE['usertype'];
-        $_SESSION['userfullname'] = $_COOKIE['userfullname'];
-        $_SESSION['userimage'] = $_COOKIE['userimage'];
+        $_SESSION['userid'] = $_COOKIE['userid'] ?? null;
+        $_SESSION['username'] = $_COOKIE['username'] ?? null;
+        $_SESSION['usertype'] = $_COOKIE['usertype'] ?? null;
+        $_SESSION['userfullname'] = $_COOKIE['userfullname'] ?? null;
+        $_SESSION['userimage'] = $_COOKIE['userimage'] ?? null;
     }
 }
+
+Security::requireCsrf();
+
 $page = isset($_GET['page']) ? $_GET['page'] : null;
-$login = isset($_SESSION['login']) ? $_SESSION['login'] : NULL;
-$userId = isset($_SESSION['userid']) ? $_SESSION['userid'] : NULL;
-$userName = isset($_SESSION['username']) ? $_SESSION['username'] : NULL;
-$fullName = isset($_SESSION['userfullname']) ? $_SESSION['userfullname'] : NULL;
-$userImage = isset($_SESSION['userimage']) ? $_SESSION['userimage'] : NULL;
-$ty = isset($_SESSION['usertype']) ? $_SESSION['usertype'] : NULL;
+$login = isset($_SESSION['login']) ? $_SESSION['login'] : null;
+$userId = isset($_SESSION['userid']) ? $_SESSION['userid'] : null;
+$userName = isset($_SESSION['username']) ? $_SESSION['username'] : null;
+$fullName = isset($_SESSION['userfullname']) ? $_SESSION['userfullname'] : null;
+$userImage = isset($_SESSION['userimage']) ? $_SESSION['userimage'] : null;
+$ty = isset($_SESSION['usertype']) ? $_SESSION['usertype'] : null;
 
 require(realpath(__DIR__ . '/../services/Model.php'));
 
@@ -42,13 +44,12 @@ try {
 if (($page == 'logout') && $login) {
     session_unset();
     session_destroy();
-    // Clear cookies
-    setcookie("login", false, time() - 3600);
-    setcookie("userid", "", time() - 3600);
-    setcookie("username", "", time() - 3600);
-    setcookie("usertype", "", time() - 3600);
-    setcookie("userfullname", "", time() - 3600);
-    setcookie("userimage", "", time() - 3600);
+    setcookie("login", '', time() - 3600, '/', '', !empty($_SERVER['HTTPS']), true);
+    setcookie("userid", '', time() - 3600, '/', '', !empty($_SERVER['HTTPS']), true);
+    setcookie("username", '', time() - 3600, '/', '', !empty($_SERVER['HTTPS']), true);
+    setcookie("usertype", '', time() - 3600, '/', '', !empty($_SERVER['HTTPS']), true);
+    setcookie("userfullname", '', time() - 3600, '/', '', !empty($_SERVER['HTTPS']), true);
+    setcookie("userimage", '', time() - 3600, '/', '', !empty($_SERVER['HTTPS']), true);
     $obj->notificationStore("Logout Success", 'success');
     header('Location: ?page=logout');
     exit();
@@ -56,14 +57,9 @@ if (($page == 'logout') && $login) {
 if (!$login) {
     if (!$login && $page === 'logout') {
         $obj->notificationStore("Logout Success", 'success');
-        echo '<script type="text/javascript">
-                    setTimeout(function(){
-                        window.location.href = "?page=login";
-                    }, 3000);
-                </script>';
+        echo '<script type="text/javascript">setTimeout(function(){window.location.href = "?page=login";}, 3000);</script>';
         exit();
     }
 } else {
-
     if ($page == 'login') header('Location: ?page=dashboard');
 }
