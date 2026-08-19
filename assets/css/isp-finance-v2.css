@@ -1,0 +1,8 @@
+.isp-finance-v2{--f-border:#e2e8f0;--f-muted:#64748b;--f-primary:#2563eb;--f-success:#16a34a;--f-danger:#dc2626}
+.isp-finance-v2 .finance-panel{background:#fff;border:1px solid var(--f-border);border-radius:16px;box-shadow:0 10px 30px rgba(15,23,42,.07);overflow:hidden}
+.isp-finance-v2 .finance-panel-header{padding:16px 18px;border-bottom:1px solid var(--f-border);display:flex;justify-content:space-between;align-items:center;gap:12px}
+.isp-finance-v2 .finance-kpi{padding:18px;border:1px solid var(--f-border);border-radius:16px;background:#fff;box-shadow:0 10px 30px rgba(15,23,42,.05);height:100%}
+.isp-finance-v2 .finance-kpi-label{font-size:.8rem;color:var(--f-muted)}.isp-finance-v2 .finance-kpi-value{font-size:1.55rem;font-weight:700;margin-top:5px}
+.isp-finance-v2 .finance-filter{background:#fff;border:1px solid var(--f-border);border-radius:16px;padding:18px}
+.isp-finance-v2 .finance-income{color:var(--f-success)}.isp-finance-v2 .finance-expense{color:var(--f-danger)}
+@media(max-width:767.98px){.isp-finance-v2 .finance-panel-header{align-items:stretch;flex-direction:column}.isp-finance-v2 .finance-filter{padding:14px}}
