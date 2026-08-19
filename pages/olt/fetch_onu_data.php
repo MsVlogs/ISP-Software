@@ -35,7 +35,7 @@ $oidIfHCOutOctets = "1.3.6.1.2.1.31.1.1.1.6";
 
 // SNMP helper with proper error handling
 function snmpWalkLines($community, $oltIp, $oid){
-    $command = "snmpwalk -v2c -c $community $oltIp $oid 2>&1";
+    $command = "snmpwalk -v2c -c " . escapeshellarg((string)$community) . " " . escapeshellarg((string)$oltIp) . " " . escapeshellarg((string)$oid) . " 2>&1";
     logMessage("Executing: $command");
     
     $output = shell_exec($command);

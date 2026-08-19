@@ -29,7 +29,7 @@ $oids = [
 
 // SNMP helper with error handling
 function snmpWalkLines($community, $oltIp, $oid){
-    $command = "snmpwalk -v2c -c $community $oltIp $oid 2>&1";
+    $command = "snmpwalk -v2c -c " . escapeshellarg((string)$community) . " " . escapeshellarg((string)$oltIp) . " " . escapeshellarg((string)$oid) . " 2>&1";
     logMessage("Executing: $command");
     
     $output = shell_exec($command);
