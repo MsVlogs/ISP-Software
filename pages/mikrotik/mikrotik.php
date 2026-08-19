@@ -13,7 +13,6 @@ foreach ($allmikrotik as $item) {
         'sl' => $i++,
         'id' => $item['id'] ?? 'N/A',
         'mik_username' => $item['mik_username'] ?? 'N/A',
-        'mik_password' => $item['mik_password'] ?? 'N/A',
         'mik_ip' => $item['mik_ip'] ?? 'N/A',
         'mik_port' => $item['mik_port'] ?? 'N/A',
         'status' => !empty($item['status']) ? 'Enable' : 'Disabled'
