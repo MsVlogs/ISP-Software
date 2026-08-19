@@ -1,0 +1,25 @@
+/* ISP-Software UI/UX v2 — ONU / Device Condition command view */
+.onu-v2{--onu-border:#e2e8f0;--onu-muted:#64748b;--onu-primary:#2563eb;--onu-good:#16a34a;--onu-warn:#d97706;--onu-bad:#dc2626}
+.onu-v2 .onu-toolbar{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:18px}
+.onu-v2 .onu-toolbar .form-select{min-width:280px;border-radius:10px}
+.onu-v2 .onu-stat{background:var(--bs-body-bg,#fff);border:1px solid var(--onu-border);border-radius:14px;padding:15px 16px;height:100%;box-shadow:0 7px 22px rgba(15,23,42,.06)}
+.onu-v2 .onu-stat-label{font-size:.78rem;color:var(--onu-muted);margin-bottom:5px}
+.onu-v2 .onu-stat-value{font-size:1.35rem;font-weight:700}
+.onu-v2 .onu-table-wrap{border:1px solid var(--onu-border);border-radius:14px;overflow:auto;background:var(--bs-body-bg,#fff);box-shadow:0 7px 22px rgba(15,23,42,.06)}
+.onu-v2 table{margin:0;min-width:920px}
+.onu-v2 thead th{font-size:.76rem;text-transform:uppercase;letter-spacing:.02em;color:var(--onu-muted);white-space:nowrap;background:rgba(148,163,184,.07);border-bottom:1px solid var(--onu-border)}
+.onu-v2 tbody td{vertical-align:middle;white-space:nowrap}
+.onu-v2 .onu-endpoint{font-weight:650;color:var(--bs-emphasis-color,#0f172a)}
+.onu-v2 .onu-subtext{font-size:.72rem;color:var(--onu-muted)}
+.onu-v2 .onu-power{font-variant-numeric:tabular-nums;font-weight:700}
+.onu-v2 .onu-power.good{color:var(--onu-good)}
+.onu-v2 .onu-power.info{color:#0284c7}
+.onu-v2 .onu-power.warning{color:var(--onu-warn)}
+.onu-v2 .onu-power.danger{color:var(--onu-bad)}
+.onu-v2 .onu-status{display:inline-flex;align-items:center;gap:6px;border-radius:999px;padding:4px 9px;font-size:.72rem;font-weight:700}
+.onu-v2 .onu-status.online{background:rgba(22,163,74,.1);color:var(--onu-good)}
+.onu-v2 .onu-status.warning{background:rgba(217,119,6,.1);color:var(--onu-warn)}
+.onu-v2 .onu-status.offline{background:rgba(220,38,38,.1);color:var(--onu-bad)}
+.onu-v2 .onu-status.unknown{background:rgba(100,116,139,.1);color:var(--onu-muted)}
+.onu-v2 .onu-refresh{border-radius:10px}
+@media(max-width:767.98px){.onu-v2 .onu-toolbar .form-select{min-width:100%;}.onu-v2 .onu-stat-value{font-size:1.15rem}}
