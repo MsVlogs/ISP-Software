@@ -24,7 +24,7 @@ function ping($host, $timeout = 2) {
     if ($os === 'WINDOWS') {
         $cmd = "ping -n 1 -w " . ($timeout * 1000) . " $host";
     } else {
-        $cmd = "ping -c 1 -W $timeout $host";
+        $cmd = "ping -c 1 -W " . (int)$timeout . " " . escapeshellarg((string)$host);
     }
     exec($cmd, $output, $status);
     return $status === 0;

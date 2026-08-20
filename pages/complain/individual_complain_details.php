@@ -1,8 +1,10 @@
 <?php
-$allComplain = $obj->raw_sql("SELECT COUNT(id) as totalComplain FROM tbl_complains WHERE complain_type = $_GET[complain_id] AND deleted_at IS NULL");
-$pendingComplains = $obj->raw_sql("SELECT COUNT(id) as totalPendingComplains FROM tbl_complains WHERE complain_type = $_GET[complain_id] AND status = 1 AND deleted_at IS NULL");
-$processingComplains = $obj->raw_sql("SELECT COUNT(id) as totalProcessingComplains FROM tbl_complains WHERE complain_type = $_GET[complain_id] AND status = 2 AND deleted_at IS NULL");
-$solvedComplains = $obj->raw_sql("SELECT COUNT(id) as totalSolvedComplains FROM tbl_complains WHERE complain_type = $_GET[complain_id] AND status = 3 AND deleted_at IS NULL");
+$complainId = filter_input(INPUT_GET, 'complain_id', FILTER_VALIDATE_INT);
+$complainId = ($complainId !== false && $complainId !== null && $complainId > 0) ? $complainId : 0;
+$allComplain = $obj->raw_sql("SELECT COUNT(id) as totalComplain FROM tbl_complains WHERE complain_type = $complainId AND deleted_at IS NULL");
+$pendingComplains = $obj->raw_sql("SELECT COUNT(id) as totalPendingComplains FROM tbl_complains WHERE complain_type = $complainId AND status = 1 AND deleted_at IS NULL");
+$processingComplains = $obj->raw_sql("SELECT COUNT(id) as totalProcessingComplains FROM tbl_complains WHERE complain_type = $complainId AND status = 2 AND deleted_at IS NULL");
+$solvedComplains = $obj->raw_sql("SELECT COUNT(id) as totalSolvedComplains FROM tbl_complains WHERE complain_type = $complainId AND status = 3 AND deleted_at IS NULL");
 ?>
 
 <style>

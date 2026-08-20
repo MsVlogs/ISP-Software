@@ -98,7 +98,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 // Case 3: Retrieve single data using GET method (for fetching data to populate the modal)
 elseif ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['mkid'])) {
-    $id = $_GET['mkid'];
+    $id = filter_input(INPUT_GET, 'mkid', FILTER_VALIDATE_INT);
+    $id = ($id !== false && $id !== null && $id > 0) ? $id : 0;
     $user = $obj->getSingleData('mikrotik_user', ['id' => $id]);
     $user = $obj->details_by_cond("mikrotik_user", "id='$id'");
 
@@ -106,7 +107,6 @@ elseif ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['mkid'])) {
         $response = [
             'id' => $id,
             'mik_username' => $user['mik_username'],
-            'mik_password' => $user['mik_password'],
             'mik_ip' => $user['mik_ip'],
             'mik_port' => $user['mik_port'],
             'success' => true

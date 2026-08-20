@@ -72,16 +72,18 @@ class Model extends Database
         }
     }
 
-    public function raw_sql($raw_sql)
+    /**
+     * Execute a read-only, parameterized SQL statement.
+     */
+    public function raw_sql($sql, array $params = [])
     {
-        $data = array();
-        $q = $this->connect->prepare($raw_sql);
-        $q->execute();
-
-        while ($row = $q->fetch(PDO::FETCH_ASSOC)) {
-            $data[] = $row;
+        $sql = trim($sql);
+        if ($sql === '' || !preg_match('/^(SELECT|WITH)\b/i', $sql)) {
+            throw new InvalidArgumentException('raw_sql() only accepts read-only SELECT/WITH statements.');
         }
-        return $data;
+        $q = $this->connect->prepare($sql);
+        $q->execute($params);
+        return $q->fetchAll(PDO::FETCH_ASSOC);
     }
 
     // Data Insert Function
@@ -169,9 +171,7 @@ class Model extends Database
     // }
 public function singleDeleteData($table_name, $condition)
     {
-        $sql = "DELETE FROM $table_name WHERE $condition";
-        $q = $this->connect->prepare($sql);
-        return $q->execute() or die(print_r($q->errorInfo()));
+        throw new LogicException('singleDeleteData() is disabled; use deleteData() with parameterized conditions.');
     }
     public function deleteData($table_name, $where_conditions)
     {
